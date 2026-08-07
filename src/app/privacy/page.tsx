@@ -11,7 +11,7 @@ export default function PrivacyPage() {
 
       <main className="mx-auto w-full max-w-2xl flex-1 px-6 py-16">
         <h1 className="font-display text-3xl font-bold text-ink">Privacy Policy</h1>
-        <LegalPageClient select={(content) => content.privacyPolicy} fallbackHeading="the Privacy Policy" />
+        <LegalPageClient field="privacyPolicy" fallbackHeading="the Privacy Policy" />
       </main>
 
       <Footer />

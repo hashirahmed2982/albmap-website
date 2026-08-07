@@ -4,7 +4,7 @@ import { useEffect, useState, useCallback } from "react";
 import { ApiError } from "@/lib/api";
 import { getContent } from "@/lib/content-api";
 import { formatDate } from "@/lib/format";
-import type { LegalPageContent, SiteContent } from "@/lib/types";
+import type { LegalPageContent } from "@/lib/types";
 
 /**
  * Shared client-side content for Privacy Policy and Terms & Conditions —
@@ -13,16 +13,26 @@ import type { LegalPageContent, SiteContent } from "@/lib/types";
  * out from each route's page.tsx so those can stay server components
  * (they export static `metadata`, which "use client" files can't do).
  *
+ * `field` is a plain string, not a `(content) => ...` selector function —
+ * a Server Component (page.tsx, no "use client") can't pass a function
+ * prop across the RSC boundary into a Client Component. That was the
+ * original design here and it broke every real request in production
+ * ("Functions cannot be passed directly to Client Components..."),
+ * despite `next build` reporting success: these are dynamically
+ * server-rendered routes, so the build step lists them but never
+ * actually renders/serializes them — only a real request does, which is
+ * why this only ever surfaced live, not locally.
+ *
  * Section bodies render as plain text with `whitespace-pre-line` so line
  * breaks are preserved (the admin portal's editor describes bullet lists
  * as separate lines starting with "• ") — no Markdown/HTML, matching the
  * mobile app's rendering of the same data.
  */
 export function LegalPageClient({
-  select,
+  field,
   fallbackHeading,
 }: {
-  select: (content: SiteContent) => LegalPageContent | null;
+  field: "privacyPolicy" | "termsConditions";
   fallbackHeading: string;
 }) {
   const [page, setPage] = useState<LegalPageContent | null>(null);
@@ -34,13 +44,13 @@ export function LegalPageClient({
     setError(null);
     try {
       const content = await getContent();
-      setPage(select(content));
+      setPage(content[field]);
     } catch (err) {
       setError(err instanceof ApiError ? err.message : "Couldn't load this page.");
     } finally {
       setIsLoading(false);
     }
-  }, [select]);
+  }, [field]);
 
   useEffect(() => {
     load();
