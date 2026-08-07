@@ -1,0 +1,114 @@
+@import "tailwindcss";
+
+/*
+  Design tokens — sourced directly from the Flutter app's
+  core/theme/app_colors.dart and app_text_styles.dart, so the website is
+  genuinely brand-consistent rather than a reinterpretation:
+    primary   #E31320  (app's AppColors.primary)
+    secondary #FF8A3D  (app's AppColors.secondary)
+    ink       #1A1D1C  (app's AppColors.textPrimary)
+
+  One deliberate departure: the app's background is a cool, dense
+  #F7F8FA — right for a mobile UI packed with cards, but flat for a
+  spacious editorial marketing layout. The website uses a warm paper tone
+  instead (#FBF8F5), which still reads as "the same brand," just
+  breathing more.
+*/
+@theme {
+  --color-primary: #e31320;
+  --color-primary-dark: #b30f19;
+  --color-primary-light: #ff4d54;
+  --color-secondary: #ff8a3d;
+  --color-secondary-light: #ffb07a;
+
+  --color-ink: #1a1d1c;
+  --color-ink-soft: #52514d;
+  --color-paper: #fbf8f5;
+  --color-paper-warm: #f3ece3;
+  --color-surface: #ffffff;
+  --color-line: #e8e1d6;
+
+  --color-success: #2e9e5b;
+  --color-warning: #e8a83c;
+  --color-error: #d64545;
+  --color-info: #3b82c4;
+
+  /* Category accents — mirrors the mobile app's categoryColor() mapping,
+     used for category chips, business cards, and the hero pin cluster. */
+  --color-cat-restaurants: #e35d13;
+  --color-cat-cafes: #b5651d;
+  --color-cat-shops: #3b82c4;
+  --color-cat-services: #52525b;
+  --color-cat-health: #2e9e5b;
+  --color-cat-entertainment: #8a3de3;
+
+  --font-display: var(--font-poppins), ui-sans-serif, system-ui, sans-serif;
+  --font-body: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+
+  --shadow-soft: 0 2px 12px -2px rgb(26 29 28 / 0.06), 0 8px 32px -8px rgb(26 29 28 / 0.08);
+  --shadow-lift: 0 8px 24px -6px rgb(227 19 32 / 0.18), 0 2px 8px -2px rgb(26 29 28 / 0.06);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+/* Visible keyboard focus everywhere, deliberately not just the browser
+   default outline — matches the brand's rounded, warm visual language. */
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-14px) rotate(-4deg); }
+}
+
+/*
+  Leaflet's own CSS assigns its internal panes z-index values up to 700
+  (tilePane 200, overlayPane 400, markerPane 600, popupPane 700) — these
+  are meant to be scoped inside .leaflet-container, but without an
+  explicit cap here they were winning the stacking comparison against
+  the site's own UI: the sticky Header (z-40) was getting visually
+  buried under the map on scroll, and the marker overview card sitting
+  on top of the map (z-[1000], but rendered as a *sibling* of
+  .leaflet-container rather than a Leaflet-internal element) was
+  inconsistently hidden behind it. Explicitly capping every Leaflet
+  layer here, well below the site's own z-index scale, fixes both at
+  once rather than needing two separate patches.
+*/
+.leaflet-container {
+  z-index: 0;
+}
+.leaflet-pane,
+.leaflet-top,
+.leaflet-bottom {
+  z-index: 10 !important;
+}
+.leaflet-popup-pane {
+  z-index: 15 !important;
+}
+.leaflet-control-container {
+  z-index: 20 !important;
+}
