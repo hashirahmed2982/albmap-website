@@ -11,7 +11,7 @@ export default function TermsPage() {
 
       <main className="mx-auto w-full max-w-2xl flex-1 px-6 py-16">
         <h1 className="font-display text-3xl font-bold text-ink">Terms &amp; Conditions</h1>
-        <LegalPageClient select={(content) => content.termsConditions} fallbackHeading="the Terms & Conditions" />
+        <LegalPageClient field="termsConditions" fallbackHeading="the Terms & Conditions" />
       </main>
 
       <Footer />
