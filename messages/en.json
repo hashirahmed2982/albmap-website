@@ -152,7 +152,12 @@
     "title": "Notifications",
     "subtitle": "Stay up to date.",
     "markAllRead": "Mark all read",
-    "noneYet": "No notifications yet."
+    "noneYet": "No notifications yet.",
+    "clearAll": "Clear all",
+    "clearAllConfirm": "Clear all notifications? This can't be undone.",
+    "deleteNotification": "Delete notification",
+    "deleteFailed": "Couldn't delete notification. Please try again.",
+    "clearAllFailed": "Couldn't clear notifications. Please try again."
   },
   "profile": {
     "editProfile": "Edit profile",

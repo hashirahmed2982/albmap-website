@@ -152,7 +152,12 @@
     "title": "Benachrichtigungen",
     "subtitle": "Bleib auf dem Laufenden.",
     "markAllRead": "Alle als gelesen markieren",
-    "noneYet": "Noch keine Benachrichtigungen."
+    "noneYet": "Noch keine Benachrichtigungen.",
+    "clearAll": "Alle löschen",
+    "clearAllConfirm": "Alle Benachrichtigungen löschen? Dies kann nicht rückgängig gemacht werden.",
+    "deleteNotification": "Benachrichtigung löschen",
+    "deleteFailed": "Benachrichtigung konnte nicht gelöscht werden. Bitte versuche es erneut.",
+    "clearAllFailed": "Benachrichtigungen konnten nicht gelöscht werden. Bitte versuche es erneut."
   },
   "profile": {
     "editProfile": "Profil bearbeiten",

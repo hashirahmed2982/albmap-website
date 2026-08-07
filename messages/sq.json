@@ -152,7 +152,12 @@
     "title": "Njoftimet",
     "subtitle": "Qëndro i/e përditësuar.",
     "markAllRead": "Shëno të gjitha si të lexuara",
-    "noneYet": "Ende nuk ka njoftime."
+    "noneYet": "Ende nuk ka njoftime.",
+    "clearAll": "Pastro të gjitha",
+    "clearAllConfirm": "Të pastrohen të gjitha njoftimet? Kjo nuk mund të zhbëhet.",
+    "deleteNotification": "Fshi njoftimin",
+    "deleteFailed": "Njoftimi nuk u fshi dot. Provo përsëri.",
+    "clearAllFailed": "Njoftimet nuk u pastruan dot. Provo përsëri."
   },
   "profile": {
     "editProfile": "Modifiko profilin",
