@@ -2,11 +2,13 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { CalendarDays } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { CalendarDays, Users } from "lucide-react";
 import type { EventItem } from "@/lib/types";
 import { categoryColor, formatDateTime, resolveMediaUrl } from "@/lib/format";
 
 export function EventCard({ event }: { event: EventItem }) {
+  const t = useTranslations("eventDetail");
   const imageUrl = resolveMediaUrl(event.imageUrl);
   const accent = categoryColor(event.category);
 
@@ -26,11 +28,21 @@ export function EventCard({ event }: { event: EventItem }) {
       </div>
       <div className="p-4">
         <h3 className="font-display text-base font-semibold text-ink line-clamp-1">{event.name}</h3>
-        <p className="mt-1 text-xs text-ink-soft line-clamp-1">Hosted by {event.businessName}</p>
-        <p className="mt-2 flex items-center gap-1.5 text-xs font-medium" style={{ color: accent }}>
-          <CalendarDays size={13} />
-          {formatDateTime(event.startTime)}
+        <p className="mt-1 text-xs text-ink-soft line-clamp-1">
+          {t("hostedBy")} {event.businessName}
         </p>
+        <div className="mt-2 flex items-center justify-between gap-2">
+          <p className="flex items-center gap-1.5 text-xs font-medium" style={{ color: accent }}>
+            <CalendarDays size={13} />
+            {formatDateTime(event.startTime)}
+          </p>
+          {!!event.interestCount && event.interestCount > 0 && (
+            <p className="flex shrink-0 items-center gap-1 text-xs text-ink-soft">
+              <Users size={12} />
+              {event.interestCount}
+            </p>
+          )}
+        </div>
       </div>
     </Link>
   );

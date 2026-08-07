@@ -95,6 +95,27 @@ export async function changePassword(currentPassword: string, newPassword: strin
 }
 
 /**
+ * Permanent — deletes the account server-side (and, for a business owner,
+ * every business/event/review that references it) and clears the local
+ * session on success. Matches the mobile app's DeleteAccountUseCase.
+ * `password` is required for a password-auth account, omitted for a
+ * social-login-only account with nothing to confirm — the backend's own
+ * "Password is required to delete your account" validation surfaces via
+ * the caller's normal error handling when it's needed but missing.
+ */
+export async function deleteAccount(password?: string): Promise<void> {
+  // Deliberately NOT a try/finally clearing tokens unconditionally (unlike
+  // logout()) — a wrong-password attempt means the account still exists
+  // server-side, and clearing the session then would incorrectly force
+  // the user out of an account that was never actually deleted.
+  await apiFetch<void>("/auth/me", {
+    method: "DELETE",
+    body: password ? { password } : undefined,
+  });
+  clearTokens();
+}
+
+/**
  * The backend endpoint (POST /users/me/avatar) already existed and works
  * correctly — this function itself was simply never built for the
  * website, so there was no way to actually reach it from the UI.

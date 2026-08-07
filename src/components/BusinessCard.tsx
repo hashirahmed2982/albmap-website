@@ -5,6 +5,7 @@ import Image from "next/image";
 import { Star, MapPin, Store } from "lucide-react";
 import type { Business } from "@/lib/types";
 import { categoryColor, resolveMediaUrl } from "@/lib/format";
+import { OpenStatusBadge } from "@/components/OpenStatusBadge";
 
 export function BusinessCard({ business }: { business: Business }) {
   const logoUrl = resolveMediaUrl(business.logoUrl);
@@ -31,15 +32,21 @@ export function BusinessCard({ business }: { business: Business }) {
             <div className="flex shrink-0 items-center gap-1 text-sm">
               <Star size={14} className="fill-warning text-warning" />
               <span className="font-medium text-ink">{business.rating.toFixed(1)}</span>
+              {business.ratingCount > 0 && (
+                <span className="text-xs text-ink-soft">({business.ratingCount})</span>
+              )}
             </div>
           )}
         </div>
-        <span
-          className="mt-1.5 inline-block rounded-full px-2.5 py-0.5 text-xs font-medium"
-          style={{ backgroundColor: `color-mix(in srgb, ${accent} 14%, white)`, color: accent }}
-        >
-          {business.category}
-        </span>
+        <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
+          <span
+            className="inline-block rounded-full px-2.5 py-0.5 text-xs font-medium"
+            style={{ backgroundColor: `color-mix(in srgb, ${accent} 14%, white)`, color: accent }}
+          >
+            {business.category}
+          </span>
+          <OpenStatusBadge openingHours={business.openingHours} dense />
+        </div>
         <p className="mt-2 flex items-center gap-1 text-xs text-ink-soft">
           <MapPin size={12} />
           <span className="line-clamp-1">{business.city}</span>

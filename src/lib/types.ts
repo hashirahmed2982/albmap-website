@@ -61,6 +61,11 @@ export interface EventItem {
   startTime: string;
   endTime: string;
   imageUrl: string | null;
+  /** Only populated by endpoints that join event_interests (getEvents/
+   * getEventById) — absent elsewhere. Matches the mobile app's
+   * EventEntity.interestCount/isInterested. */
+  interestCount?: number;
+  isInterested?: boolean;
 }
 
 export interface Category {
@@ -76,6 +81,7 @@ export interface Review {
   rating: number;
   comment: string | null;
   createdAt: string;
+  updatedAt?: string;
 }
 
 export interface AppNotification {

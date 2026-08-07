@@ -13,15 +13,33 @@ export async function getEvents(params: {
   Object.entries(params).forEach(([k, v]) => {
     if (v !== undefined) qs.set(k, String(v));
   });
+  // Not skipAuth: the backend route is optionalAuth (browsing never
+  // *requires* login, so this still works fine with no token at all —
+  // apiFetch simply omits the header when getAccessToken() returns null),
+  // but a logged-in caller gets isInterested computed for them on each
+  // event. Previously this always skipped the auth header, so
+  // isInterested came back false even for a user who actually was.
   const res = await apiFetch<{ data: EventItem[]; pagination: Pagination }>(
     `/events?${qs.toString()}`,
-    { skipAuth: true },
   );
   return { events: res.data, pagination: res.pagination };
 }
 
 export async function getEventById(id: string): Promise<EventItem> {
-  return apiFetch<EventItem>(`/events/${id}`, { skipAuth: true });
+  return apiFetch<EventItem>(`/events/${id}`);
+}
+
+/**
+ * "I'm interested" / RSVP toggle — see the backend's event.routes.js
+ * (POST/DELETE /events/:id/interest) and event_interests table. Matches
+ * the mobile app's ToggleEventInterestUseCase.
+ */
+export async function addInterest(eventId: string): Promise<void> {
+  await apiFetch<void>(`/events/${eventId}/interest`, { method: "POST" });
+}
+
+export async function removeInterest(eventId: string): Promise<void> {
+  await apiFetch<void>(`/events/${eventId}/interest`, { method: "DELETE" });
 }
 
 export interface CreateEventPayload {

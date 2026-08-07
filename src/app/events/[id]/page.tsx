@@ -1,27 +1,86 @@
 "use client";
 
-import { useEffect, useState, use as usePromise } from "react";
+import { useEffect, useState, useCallback, use as usePromise } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { CalendarDays, MapPin, Share2 } from "lucide-react";
+import { CalendarDays, MapPin, Share2, Heart, Users, Check } from "lucide-react";
 import { Header } from "@/components/Header";
-import { getEventById } from "@/lib/event-api";
+import { useAuth } from "@/lib/auth-context";
+import { getEventById, addInterest, removeInterest } from "@/lib/event-api";
+import { addEventFavorite, removeEventFavorite, getMyEventFavorites } from "@/lib/favorites-api";
+import { ApiError } from "@/lib/api";
+import { useToast } from "@/lib/toast-context";
 import { categoryColor, formatDateTime, resolveMediaUrl } from "@/lib/format";
 import type { EventItem } from "@/lib/types";
 
 export default function EventDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = usePromise(params);
   const t = useTranslations("eventDetail");
+  const { user } = useAuth();
+  const { showToast } = useToast();
   const [event, setEvent] = useState<EventItem | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isFavorite, setIsFavorite] = useState(false);
+  const [isTogglingFavorite, setIsTogglingFavorite] = useState(false);
+  const [isTogglingInterest, setIsTogglingInterest] = useState(false);
 
   useEffect(() => {
-    getEventById(id)
-      .then(setEvent)
-      .catch(() => setEvent(null))
-      .finally(() => setIsLoading(false));
-  }, [id]);
+    async function load() {
+      try {
+        const e = await getEventById(id);
+        setEvent(e);
+        if (user) {
+          const favs = await getMyEventFavorites().catch(() => []);
+          setIsFavorite(favs.some((f) => f.id === id));
+        }
+      } catch {
+        setEvent(null);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    load();
+  }, [id, user]);
+
+  const toggleFavorite = useCallback(async () => {
+    if (!user) return;
+    setIsTogglingFavorite(true);
+    try {
+      if (isFavorite) {
+        await removeEventFavorite(id);
+        setIsFavorite(false);
+      } else {
+        await addEventFavorite(id);
+        setIsFavorite(true);
+      }
+    } catch (err) {
+      showToast(err instanceof ApiError ? err.message : t("favoriteFailed"), "error");
+    } finally {
+      setIsTogglingFavorite(false);
+    }
+  }, [id, isFavorite, user, showToast, t]);
+
+  const toggleInterest = useCallback(async () => {
+    if (!user || !event) return;
+    setIsTogglingInterest(true);
+    try {
+      if (event.isInterested) {
+        await removeInterest(id);
+      } else {
+        await addInterest(id);
+      }
+      // The toggle call itself doesn't return the updated event — refetch
+      // so the button/count reflect the new server state, same as the
+      // mobile app's EventInterestController.
+      const fresh = await getEventById(id);
+      setEvent(fresh);
+    } catch (err) {
+      showToast(err instanceof ApiError ? err.message : t("interestFailed"), "error");
+    } finally {
+      setIsTogglingInterest(false);
+    }
+  }, [id, user, event, showToast, t]);
 
   if (isLoading) {
     return (
@@ -68,13 +127,25 @@ export default function EventDetailPage({ params }: { params: Promise<{ id: stri
                 {t("hostedBy")} {event.businessName}
               </Link>
             </div>
-            <button
-              onClick={() => navigator.share?.({ title: event.name, url: window.location.href })}
-              className="shrink-0 rounded-full border border-line p-3 text-ink-soft hover:bg-paper-warm"
-              aria-label={t("share")}
-            >
-              <Share2 size={18} />
-            </button>
+            <div className="flex shrink-0 items-center gap-2">
+              {user && (
+                <button
+                  onClick={toggleFavorite}
+                  disabled={isTogglingFavorite}
+                  className={`rounded-full border p-3 transition-colors disabled:opacity-60 ${isFavorite ? "border-primary bg-primary/10 text-primary" : "border-line text-ink-soft"}`}
+                  aria-label={t("toggleFavorite")}
+                >
+                  <Heart size={18} className={isFavorite ? "fill-primary" : ""} />
+                </button>
+              )}
+              <button
+                onClick={() => navigator.share?.({ title: event.name, url: window.location.href })}
+                className="rounded-full border border-line p-3 text-ink-soft hover:bg-paper-warm"
+                aria-label={t("share")}
+              >
+                <Share2 size={18} />
+              </button>
+            </div>
           </div>
 
           <span
@@ -90,6 +161,26 @@ export default function EventDetailPage({ params }: { params: Promise<{ id: stri
               <p className="text-sm font-semibold text-ink">{formatDateTime(event.startTime)}</p>
               <p className="text-xs text-ink-soft">{t("until")} {formatDateTime(event.endTime)}</p>
             </div>
+          </div>
+
+          <div className="mt-4 flex items-center justify-between gap-3 rounded-2xl bg-paper p-5">
+            <p className="flex items-center gap-2 text-sm text-ink-soft">
+              <Users size={17} className="text-ink-soft" />
+              {t("interestedCount", { count: event.interestCount ?? 0 })}
+            </p>
+            {user && (
+              <button
+                onClick={toggleInterest}
+                disabled={isTogglingInterest}
+                className={`flex shrink-0 items-center gap-1.5 rounded-full border px-4 py-2 text-sm font-semibold transition-colors disabled:opacity-60 ${
+                  event.isInterested ? "text-white" : "border-line text-ink-soft hover:bg-paper-warm"
+                }`}
+                style={event.isInterested ? { backgroundColor: accent, borderColor: accent } : undefined}
+              >
+                {event.isInterested ? <Check size={15} /> : null}
+                {event.isInterested ? t("interested") : t("imInterested")}
+              </button>
+            )}
           </div>
 
           {event.description && (

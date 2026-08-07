@@ -2,8 +2,9 @@
 
 import { useState, useCallback, useRef } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { User as UserIcon, Lock, Camera } from "lucide-react";
+import { User as UserIcon, Lock, Camera, AlertTriangle } from "lucide-react";
 import { Header } from "@/components/Header";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { useAuth } from "@/lib/auth-context";
@@ -14,8 +15,9 @@ import { resolveMediaUrl } from "@/lib/format";
 
 function ProfileContent() {
   const t = useTranslations("profile");
-  const { user, refreshUser } = useAuth();
+  const { user, refreshUser, deleteAccount } = useAuth();
   const { showToast } = useToast();
+  const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [isUploadingPicture, setIsUploadingPicture] = useState(false);
@@ -31,6 +33,11 @@ function ProfileContent() {
   const [isSavingPassword, setIsSavingPassword] = useState(false);
   const [passwordMessage, setPasswordMessage] = useState<string | null>(null);
   const [passwordError, setPasswordError] = useState<string | null>(null);
+
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [deletePassword, setDeletePassword] = useState("");
+  const [isDeletingAccount, setIsDeletingAccount] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
 
   const handlePictureChange = useCallback(
     async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -98,6 +105,27 @@ function ProfileContent() {
       }
     },
     [currentPassword, newPassword, confirmPassword, t, showToast],
+  );
+
+  const handleDeleteAccount = useCallback(
+    async (e: React.FormEvent) => {
+      e.preventDefault();
+      setDeleteError(null);
+      setIsDeletingAccount(true);
+      try {
+        await deleteAccount(deletePassword || undefined);
+        // Account no longer exists server-side — nothing left to navigate
+        // "back" to on this page, send to the homepage.
+        router.push("/");
+      } catch (err) {
+        const message = err instanceof ApiError ? err.message : t("deleteAccountFailed");
+        setDeleteError(message);
+        showToast(message, "error");
+      } finally {
+        setIsDeletingAccount(false);
+      }
+    },
+    [deletePassword, deleteAccount, router, t, showToast],
   );
 
   const avatarUrl = resolveMediaUrl(user?.profileImageUrl);
@@ -211,6 +239,64 @@ function ProfileContent() {
             {isSavingPassword ? t("saving") : t("changePassword")}
           </button>
         </form>
+
+        {/* Danger zone — required for App Store Guideline 5.1.1(v) parity
+            with the mobile app: any product supporting in-app account
+            creation must also support in-app account deletion. Previously
+            there was no way to delete an account from the website at all. */}
+        <div className="mt-6 rounded-2xl border border-error/30 bg-error/5 p-6">
+          <h2 className="flex items-center gap-2 font-display text-lg font-semibold text-error">
+            <AlertTriangle size={17} /> {t("dangerZone")}
+          </h2>
+          <p className="mt-2 text-sm text-ink-soft">{t("deleteAccountWarning")}</p>
+
+          {!showDeleteConfirm ? (
+            <button
+              type="button"
+              onClick={() => setShowDeleteConfirm(true)}
+              className="mt-4 rounded-full border border-error px-5 py-2.5 text-sm font-semibold text-error hover:bg-error/10"
+            >
+              {t("deleteAccount")}
+            </button>
+          ) : (
+            <form onSubmit={handleDeleteAccount} className="mt-4">
+              {deleteError && <p className="mb-3 text-sm text-error">{deleteError}</p>}
+              <label className="mb-1.5 block text-sm font-medium text-ink">
+                {t("deleteAccountPasswordLabel")}
+              </label>
+              <input
+                type="password"
+                maxLength={72}
+                value={deletePassword}
+                onChange={(e) => setDeletePassword(e.target.value)}
+                placeholder={t("deleteAccountPasswordPlaceholder")}
+                className="w-full rounded-xl border border-line bg-paper px-4 py-2.5 text-sm outline-none focus:border-error"
+              />
+              <p className="mt-1.5 text-xs text-ink-soft">{t("deleteAccountPasswordHelper")}</p>
+              <div className="mt-4 flex items-center gap-3">
+                <button
+                  type="submit"
+                  disabled={isDeletingAccount}
+                  className="rounded-full bg-error px-5 py-2.5 text-sm font-semibold text-white disabled:opacity-60"
+                >
+                  {isDeletingAccount ? t("deleting") : t("confirmDeleteAccount")}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowDeleteConfirm(false);
+                    setDeletePassword("");
+                    setDeleteError(null);
+                  }}
+                  disabled={isDeletingAccount}
+                  className="rounded-full px-4 py-2.5 text-sm font-medium text-ink-soft hover:bg-paper-warm"
+                >
+                  {t("cancel")}
+                </button>
+              </div>
+            </form>
+          )}
+        </div>
       </div>
     </div>
   );
