@@ -1,13 +1,29 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { Bell, BellOff, CheckCheck } from "lucide-react";
+import { Bell, BellOff, CheckCheck, Trash2 } from "lucide-react";
 import { Header } from "@/components/Header";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
-import { getFeed, markAsRead, markAllAsRead } from "@/lib/notifications-api";
+import { ApiError } from "@/lib/api";
+import { useToast } from "@/lib/toast-context";
+import {
+  getFeed,
+  markAsRead,
+  markAllAsRead,
+  deleteNotification,
+  deleteAllNotifications,
+} from "@/lib/notifications-api";
 import { timeAgo } from "@/lib/format";
 import type { AppNotification } from "@/lib/types";
+
+// relatedId is the business id for every type the backend currently sends
+// (business_offer, business_approved, business_rejected) — see
+// notification.service.js. There's no event-related notification yet,
+// and 'general' has nothing to deep-link to. Matches the mobile app's
+// FcmService/NotificationsScreen tap mapping.
+const BUSINESS_LINKED_TYPES = new Set(["business_offer", "business_approved", "business_rejected"]);
 
 function iconColorFor(type: string): string {
   switch (type) {
@@ -20,6 +36,8 @@ function iconColorFor(type: string): string {
 
 function NotificationsContent() {
   const t = useTranslations("notifications");
+  const router = useRouter();
+  const { showToast } = useToast();
   const [notifications, setNotifications] = useState<AppNotification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
@@ -46,10 +64,56 @@ function NotificationsContent() {
     await markAsRead(id);
   }
 
+  function handleTap(n: AppNotification) {
+    handleRead(n.id);
+    if (BUSINESS_LINKED_TYPES.has(n.type) && n.relatedId) {
+      router.push(`/businesses/${n.relatedId}`);
+    }
+  }
+
   async function handleMarkAllRead() {
     setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })));
     setUnreadCount(0);
     await markAllAsRead();
+  }
+
+  // Removes just this user's copy from their feed — notification rows are
+  // shared across every recipient, so this can never delete it for anyone
+  // else (see notifications-api.ts / the backend's notification_deletes
+  // table). Optimistic with rollback, same shape as the mobile app.
+  async function handleDelete(id: string) {
+    const previous = notifications;
+    const target = previous.find((n) => n.id === id);
+    if (!target) return;
+
+    setNotifications((prev) => prev.filter((n) => n.id !== id));
+    if (!target.isRead) setUnreadCount((c) => Math.max(0, c - 1));
+
+    try {
+      await deleteNotification(id);
+    } catch (err) {
+      setNotifications(previous);
+      if (!target.isRead) setUnreadCount((c) => c + 1);
+      showToast(err instanceof ApiError ? err.message : t("deleteFailed"), "error");
+    }
+  }
+
+  async function handleClearAll() {
+    if (notifications.length === 0) return;
+    if (!window.confirm(t("clearAllConfirm"))) return;
+
+    const previous = notifications;
+    const previousUnread = unreadCount;
+    setNotifications([]);
+    setUnreadCount(0);
+
+    try {
+      await deleteAllNotifications();
+    } catch (err) {
+      setNotifications(previous);
+      setUnreadCount(previousUnread);
+      showToast(err instanceof ApiError ? err.message : t("clearAllFailed"), "error");
+    }
   }
 
   return (
@@ -61,13 +125,23 @@ function NotificationsContent() {
             <h1 className="font-display text-3xl font-bold text-ink">{t("title")}</h1>
             <p className="mt-1 text-sm text-ink-soft">{t("subtitle")}</p>
           </div>
-          {unreadCount > 0 && (
-            <button
-              onClick={handleMarkAllRead}
-              className="flex items-center gap-1.5 rounded-full border border-line px-4 py-2 text-sm font-medium text-ink hover:bg-paper-warm"
-            >
-              <CheckCheck size={15} /> {t("markAllRead")}
-            </button>
+          {notifications.length > 0 && (
+            <div className="flex items-center gap-2">
+              {unreadCount > 0 && (
+                <button
+                  onClick={handleMarkAllRead}
+                  className="flex items-center gap-1.5 rounded-full border border-line px-4 py-2 text-sm font-medium text-ink hover:bg-paper-warm"
+                >
+                  <CheckCheck size={15} /> {t("markAllRead")}
+                </button>
+              )}
+              <button
+                onClick={handleClearAll}
+                className="flex items-center gap-1.5 rounded-full border border-line px-4 py-2 text-sm font-medium text-ink-soft hover:border-error hover:text-error"
+              >
+                <Trash2 size={15} /> {t("clearAll")}
+              </button>
+            </div>
           )}
         </div>
 
@@ -85,25 +159,37 @@ function NotificationsContent() {
               // text (or a system notice) — real user-generated content from
               // the backend, not UI chrome, so deliberately left untranslated
               // here, same as the mobile app.
-              <button
+              <div
                 key={n.id}
-                onClick={() => handleRead(n.id)}
-                className={`flex w-full items-start gap-3 rounded-2xl p-4 text-left transition-colors ${n.isRead ? "bg-surface" : "bg-primary/5"}`}
+                className={`flex w-full items-start gap-2 rounded-2xl p-4 transition-colors ${n.isRead ? "bg-surface" : "bg-primary/5"}`}
               >
-                <div
-                  className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full"
-                  style={{ backgroundColor: `color-mix(in srgb, ${iconColorFor(n.type)} 14%, white)` }}
+                <button
+                  onClick={() => handleTap(n)}
+                  className="flex min-w-0 flex-1 items-start gap-3 text-left"
                 >
-                  <Bell size={16} style={{ color: iconColorFor(n.type) }} />
-                </div>
-                <div className="min-w-0 flex-1">
-                  <p className="text-sm font-semibold text-ink">{n.title}</p>
-                  <p className="mt-0.5 text-sm text-ink-soft line-clamp-2">
-                    {n.businessName ? `${n.businessName} · ${n.body}` : n.body}
-                  </p>
-                  <p className="mt-1 text-xs text-ink-soft">{timeAgo(n.createdAt)}</p>
-                </div>
-              </button>
+                  <div
+                    className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full"
+                    style={{ backgroundColor: `color-mix(in srgb, ${iconColorFor(n.type)} 14%, white)` }}
+                  >
+                    <Bell size={16} style={{ color: iconColorFor(n.type) }} />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-semibold text-ink">{n.title}</p>
+                    <p className="mt-0.5 text-sm text-ink-soft line-clamp-2">
+                      {n.businessName ? `${n.businessName} · ${n.body}` : n.body}
+                    </p>
+                    <p className="mt-1 text-xs text-ink-soft">{timeAgo(n.createdAt)}</p>
+                  </div>
+                </button>
+                <button
+                  onClick={() => handleDelete(n.id)}
+                  aria-label={t("deleteNotification")}
+                  title={t("deleteNotification")}
+                  className="shrink-0 rounded-full p-1.5 text-ink-soft hover:bg-error/10 hover:text-error"
+                >
+                  <Trash2 size={15} />
+                </button>
+              </div>
             ))
           )}
         </div>

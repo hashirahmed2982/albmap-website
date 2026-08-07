@@ -13,6 +13,7 @@ interface AuthContextValue {
   loginWithGoogle: (idToken: string) => Promise<void>;
   loginWithFacebook: (accessToken: string) => Promise<void>;
   logout: () => Promise<void>;
+  deleteAccount: (password?: string) => Promise<void>;
   refreshUser: () => Promise<void>;
 }
 
@@ -70,6 +71,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null);
   }, []);
 
+  const deleteAccount = useCallback(async (password?: string) => {
+    await authApi.deleteAccount(password);
+    setUser(null);
+  }, []);
+
   const refreshUser = useCallback(async () => {
     const currentUser = await authApi.getCurrentUser();
     setUser(currentUser);
@@ -77,7 +83,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   return (
     <AuthContext.Provider
-      value={{ user, isLoading, login, signup, loginWithGoogle, loginWithFacebook, logout, refreshUser }}
+      value={{
+        user,
+        isLoading,
+        login,
+        signup,
+        loginWithGoogle,
+        loginWithFacebook,
+        logout,
+        deleteAccount,
+        refreshUser,
+      }}
     >
       {children}
     </AuthContext.Provider>

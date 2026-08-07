@@ -100,12 +100,31 @@
     "submitReview": "Bewertung abschicken",
     "noReviewsYet": "Noch keine Bewertungen.",
     "reviewSubmitFailed": "Bewertung konnte nicht gesendet werden. Bitte versuche es erneut.",
-    "favoriteFailed": "Favoriten konnten nicht aktualisiert werden. Bitte versuche es erneut."
+    "favoriteFailed": "Favoriten konnten nicht aktualisiert werden. Bitte versuche es erneut.",
+    "openNow": "Jetzt geöffnet",
+    "closedNow": "Geschlossen",
+    "writeAReview": "Bewertung schreiben",
+    "editYourReview": "Deine Bewertung bearbeiten",
+    "updateReview": "Bewertung aktualisieren",
+    "deleting": "Wird gelöscht…",
+    "deleteReview": "Bewertung löschen",
+    "deleteReviewConfirm": "Deine Bewertung löschen? Dies kann nicht rückgängig gemacht werden.",
+    "reviewDeleteFailed": "Bewertung konnte nicht gelöscht werden. Bitte versuche es erneut.",
+    "you": "Du"
   },
   "events": {
     "title": "Veranstaltungen",
     "subtitle": "Entdecke, was in deiner Nähe passiert.",
-    "noEventsFound": "Keine kommenden Veranstaltungen gefunden."
+    "noEventsFound": "Keine kommenden Veranstaltungen gefunden.",
+    "searchPlaceholder": "Veranstaltungen suchen…",
+    "until": "bis",
+    "datePreset": {
+      "upcoming": "Alle kommenden",
+      "today": "Heute",
+      "week": "Diese Woche",
+      "month": "Diesen Monat",
+      "custom": "Benutzerdefinierter Zeitraum"
+    }
   },
   "eventDetail": {
     "notFound": "Veranstaltung nicht gefunden.",
@@ -113,18 +132,32 @@
     "until": "bis",
     "aboutEvent": "Über diese Veranstaltung",
     "viewBusiness": "Unternehmen ansehen",
-    "share": "Teilen"
+    "share": "Teilen",
+    "toggleFavorite": "Favorit umschalten",
+    "favoriteFailed": "Favoriten konnten nicht aktualisiert werden. Bitte versuche es erneut.",
+    "interestFailed": "Interesse konnte nicht aktualisiert werden. Bitte versuche es erneut.",
+    "interestedCount": "{count} interessiert",
+    "interested": "Interessiert",
+    "imInterested": "Interessiert mich"
   },
   "favorites": {
     "title": "Favoriten",
     "subtitle": "Unternehmen, die du gespeichert hast.",
-    "noneYet": "Noch keine Favoriten — durchstöbere Unternehmen und tippe auf das Herz, um eines zu speichern."
+    "noneYet": "Noch keine Favoriten — durchstöbere Unternehmen und tippe auf das Herz, um eines zu speichern.",
+    "businesses": "Unternehmen",
+    "events": "Veranstaltungen",
+    "noEventsYet": "Noch keine favorisierten Veranstaltungen — durchsuche Veranstaltungen und tippe auf das Herz, um eine zu speichern."
   },
   "notifications": {
     "title": "Benachrichtigungen",
     "subtitle": "Bleib auf dem Laufenden.",
     "markAllRead": "Alle als gelesen markieren",
-    "noneYet": "Noch keine Benachrichtigungen."
+    "noneYet": "Noch keine Benachrichtigungen.",
+    "clearAll": "Alle löschen",
+    "clearAllConfirm": "Alle Benachrichtigungen löschen? Dies kann nicht rückgängig gemacht werden.",
+    "deleteNotification": "Benachrichtigung löschen",
+    "deleteFailed": "Benachrichtigung konnte nicht gelöscht werden. Bitte versuche es erneut.",
+    "clearAllFailed": "Benachrichtigungen konnten nicht gelöscht werden. Bitte versuche es erneut."
   },
   "profile": {
     "editProfile": "Profil bearbeiten",
@@ -145,7 +178,17 @@
     "changePicture": "Bild ändern",
     "uploadingPicture": "Wird hochgeladen…",
     "pictureUpdated": "Profilbild aktualisiert.",
-    "pictureUploadFailed": "Profilbild konnte nicht hochgeladen werden."
+    "pictureUploadFailed": "Profilbild konnte nicht hochgeladen werden.",
+    "dangerZone": "Gefahrenzone",
+    "deleteAccountWarning": "Dies löscht dein Konto dauerhaft. Falls du Unternehmen oder Veranstaltungen besitzt, werden auch deren Einträge, Bewertungen und Daten gelöscht. Dies kann nicht rückgängig gemacht werden.",
+    "deleteAccount": "Konto löschen",
+    "deleteAccountPasswordLabel": "Passwort",
+    "deleteAccountPasswordPlaceholder": "Gib dein Passwort zur Bestätigung ein",
+    "deleteAccountPasswordHelper": "Lass es leer, wenn du dich mit Google oder Facebook angemeldet hast.",
+    "confirmDeleteAccount": "Mein Konto dauerhaft löschen",
+    "deleting": "Wird gelöscht…",
+    "cancel": "Abbrechen",
+    "deleteAccountFailed": "Konto konnte nicht gelöscht werden. Bitte versuche es erneut."
   },
   "dashboard": {
     "title": "Meine Unternehmen",
@@ -219,13 +262,6 @@
     "sendNotification": "Benachrichtigung senden",
     "submittedForReview": "Zur Prüfung eingereicht. Ein Administrator prüft dies, bevor es an alle Nutzer gesendet wird.",
     "submitFailed": "Benachrichtigung konnte nicht gesendet werden."
-  },
-  "about": {
-    "tagline": "Entdecke lokale Unternehmen & Veranstaltungen in deiner Nähe",
-    "missionTitle": "Unsere Mission",
-    "missionBody": "AlbMap verbindet Gemeinschaften mit den lokalen Unternehmen und Veranstaltungen, die ihre Viertel lebendig machen — es macht die Entdeckung für Besucher mühelos und gibt Unternehmern die Werkzeuge, um die Menschen in ihrer Umgebung zu erreichen.",
-    "visionTitle": "Unsere Vision",
-    "visionBody": "Die führende Plattform für lokale Entdeckungen zu werden — eine Karte, jede Gemeinschaft."
   },
   "contact": {
     "title": "Kontakt",

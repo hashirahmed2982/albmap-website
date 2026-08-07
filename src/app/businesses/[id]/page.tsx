@@ -4,18 +4,19 @@ import { useEffect, useState, useCallback, use as usePromise } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { Phone, MessageCircle, Navigation, Star, Heart, Clock, MapPin, CalendarDays } from "lucide-react";
+import { Phone, MessageCircle, Navigation, Star, Heart, Clock, MapPin, CalendarDays, Trash2 } from "lucide-react";
 import { Header } from "@/components/Header";
 import { EventCard } from "@/components/EventCard";
+import { OpenStatusBadge } from "@/components/OpenStatusBadge";
 import { useAuth } from "@/lib/auth-context";
 import { getBusinessById } from "@/lib/business-api";
 import { addFavorite, removeFavorite, getMyFavorites } from "@/lib/favorites-api";
 import { getEvents } from "@/lib/event-api";
-import { getBusinessReviews, submitReview } from "@/lib/review-api";
+import { getBusinessReviews, submitReview, deleteReview } from "@/lib/review-api";
 import { recordAnalyticsEvent } from "@/lib/analytics-api";
 import { ApiError } from "@/lib/api";
 import { useToast } from "@/lib/toast-context";
-import { categoryColor, collapseOpeningHours, resolveMediaUrl, timeAgo } from "@/lib/format";
+import { categoryColor, collapseOpeningHours, isEventFinished, resolveMediaUrl, timeAgo } from "@/lib/format";
 import type { Business, EventItem, Review } from "@/lib/types";
 
 export default function BusinessDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -32,6 +33,13 @@ export default function BusinessDetailPage({ params }: { params: Promise<{ id: s
   const [reviewRating, setReviewRating] = useState(5);
   const [reviewComment, setReviewComment] = useState("");
   const [isSubmittingReview, setIsSubmittingReview] = useState(false);
+  const [isDeletingReview, setIsDeletingReview] = useState(false);
+  // Tracks whether the review form has been pre-filled from the user's
+  // own existing review yet, so we only seed it once (not on every
+  // reviews refetch, which would otherwise clobber in-progress edits).
+  const [hasSeededReviewForm, setHasSeededReviewForm] = useState(false);
+
+  const myReview = user ? reviews.find((r) => r.userId === user.id) ?? null : null;
 
   useEffect(() => {
     async function load() {
@@ -49,12 +57,26 @@ export default function BusinessDetailPage({ params }: { params: Promise<{ id: s
         if (user) {
           const favorites = await getMyFavorites().catch(() => []);
           setIsFavorite(favorites.some((f) => f.id === id));
+
+          // POST /businesses/:id/reviews is create-or-update server-side
+          // (one review per user per business) — the form previously
+          // always started blank, so re-submitting silently overwrote
+          // whatever rating/comment the user had left before, with no
+          // way to see or edit it first. Seed from their existing review
+          // once, matching the mobile app's WriteReviewSheet.
+          const existing = reviewRes.find((r) => r.userId === user.id);
+          if (existing && !hasSeededReviewForm) {
+            setReviewRating(existing.rating);
+            setReviewComment(existing.comment ?? "");
+            setHasSeededReviewForm(true);
+          }
         }
       } finally {
         setIsLoading(false);
       }
     }
     load();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, user]);
 
   const toggleFavorite = useCallback(async () => {
@@ -81,7 +103,10 @@ export default function BusinessDetailPage({ params }: { params: Promise<{ id: s
         const [biz, reviewRes] = await Promise.all([getBusinessById(id), getBusinessReviews(id)]);
         setBusiness(biz);
         setReviews(reviewRes);
-        setReviewComment("");
+        // Leave the form showing what was just submitted (this is
+        // create-or-update — submitting again edits the same review)
+        // rather than clearing it, which previously made a successful
+        // *edit* look like the comment had vanished.
       } catch (err) {
         // Previously had no catch at all — a failed submission (duplicate
         // review, network error, etc.) silently did nothing, with zero
@@ -93,6 +118,24 @@ export default function BusinessDetailPage({ params }: { params: Promise<{ id: s
     },
     [id, reviewRating, reviewComment, showToast, t],
   );
+
+  const handleDeleteReview = useCallback(async () => {
+    if (!window.confirm(t("deleteReviewConfirm"))) return;
+    setIsDeletingReview(true);
+    try {
+      await deleteReview(id);
+      const [biz, reviewRes] = await Promise.all([getBusinessById(id), getBusinessReviews(id)]);
+      setBusiness(biz);
+      setReviews(reviewRes);
+      setReviewRating(5);
+      setReviewComment("");
+      setHasSeededReviewForm(false);
+    } catch (err) {
+      showToast(err instanceof ApiError ? err.message : t("reviewDeleteFailed"), "error");
+    } finally {
+      setIsDeletingReview(false);
+    }
+  }, [id, showToast, t]);
 
   if (isLoading) {
     return (
@@ -119,6 +162,10 @@ export default function BusinessDetailPage({ params }: { params: Promise<{ id: s
   const accent = categoryColor(business.category);
   const logoUrl = resolveMediaUrl(business.logoUrl);
   const hours = collapseOpeningHours(business.openingHours);
+  // Same "finished events are never useful to show" rule as the Events
+  // list page — this section previously kept showing an event long after
+  // it had ended.
+  const upcomingEvents = events.filter((e) => !isEventFinished(e.endTime));
 
   return (
     <div className="min-h-screen bg-paper">
@@ -152,6 +199,7 @@ export default function BusinessDetailPage({ params }: { params: Promise<{ id: s
                     {business.rating.toFixed(1)} ({business.ratingCount})
                   </span>
                 )}
+                <OpenStatusBadge openingHours={business.openingHours} />
               </div>
             </div>
             {user && (
@@ -226,13 +274,13 @@ export default function BusinessDetailPage({ params }: { params: Promise<{ id: s
           </div>
         </div>
 
-        {events.length > 0 && (
+        {upcomingEvents.length > 0 && (
           <div className="mt-10">
             <h2 className="mb-4 flex items-center gap-2 font-display text-xl font-bold text-ink">
               <CalendarDays size={20} /> {t("upcomingEvents")}
             </h2>
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-              {events.map((e) => (
+              {upcomingEvents.map((e) => (
                 <EventCard key={e.id} event={e} />
               ))}
             </div>
@@ -244,6 +292,9 @@ export default function BusinessDetailPage({ params }: { params: Promise<{ id: s
 
           {user && (
             <form onSubmit={handleReviewSubmit} className="mb-6 rounded-2xl bg-surface p-5 shadow-soft">
+              <h3 className="mb-2 text-sm font-semibold text-ink">
+                {myReview ? t("editYourReview") : t("writeAReview")}
+              </h3>
               <div className="flex items-center gap-1">
                 {[1, 2, 3, 4, 5].map((n) => (
                   <button key={n} type="button" onClick={() => setReviewRating(n)}>
@@ -259,13 +310,29 @@ export default function BusinessDetailPage({ params }: { params: Promise<{ id: s
                 maxLength={1000}
                 className="mt-3 w-full resize-none rounded-xl border border-line bg-paper px-3 py-2 text-sm outline-none focus:border-primary"
               />
-              <button
-                type="submit"
-                disabled={isSubmittingReview}
-                className="mt-3 rounded-full bg-primary px-5 py-2 text-sm font-semibold text-white disabled:opacity-60"
-              >
-                {isSubmittingReview ? t("submitting") : t("submitReview")}
-              </button>
+              <div className="mt-3 flex items-center gap-3">
+                <button
+                  type="submit"
+                  disabled={isSubmittingReview}
+                  className="rounded-full bg-primary px-5 py-2 text-sm font-semibold text-white disabled:opacity-60"
+                >
+                  {isSubmittingReview
+                    ? t("submitting")
+                    : myReview
+                      ? t("updateReview")
+                      : t("submitReview")}
+                </button>
+                {myReview && (
+                  <button
+                    type="button"
+                    onClick={handleDeleteReview}
+                    disabled={isDeletingReview}
+                    className="flex items-center gap-1.5 rounded-full px-3 py-2 text-sm font-medium text-error hover:bg-error/5 disabled:opacity-60"
+                  >
+                    <Trash2 size={15} /> {isDeletingReview ? t("deleting") : t("deleteReview")}
+                  </button>
+                )}
+              </div>
             </form>
           )}
 
@@ -276,7 +343,9 @@ export default function BusinessDetailPage({ params }: { params: Promise<{ id: s
               {reviews.map((r) => (
                 <div key={r.id} className="rounded-2xl bg-surface p-5 shadow-soft">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-semibold text-ink">{r.userName}</span>
+                    <span className="text-sm font-semibold text-ink">
+                      {user?.id === r.userId ? t("you") : r.userName}
+                    </span>
                     <span className="text-xs text-ink-soft">{timeAgo(r.createdAt)}</span>
                   </div>
                   <div className="mt-1 flex gap-0.5">

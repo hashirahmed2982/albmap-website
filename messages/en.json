@@ -100,12 +100,31 @@
     "submitReview": "Submit review",
     "noReviewsYet": "No reviews yet.",
     "reviewSubmitFailed": "Failed to submit review. Please try again.",
-    "favoriteFailed": "Failed to update favorites. Please try again."
+    "favoriteFailed": "Failed to update favorites. Please try again.",
+    "openNow": "Open now",
+    "closedNow": "Closed",
+    "writeAReview": "Write a review",
+    "editYourReview": "Edit your review",
+    "updateReview": "Update review",
+    "deleting": "Deleting…",
+    "deleteReview": "Delete review",
+    "deleteReviewConfirm": "Delete your review? This can't be undone.",
+    "reviewDeleteFailed": "Failed to delete review. Please try again.",
+    "you": "You"
   },
   "events": {
     "title": "Events",
     "subtitle": "Discover what's happening near you.",
-    "noEventsFound": "No upcoming events found."
+    "noEventsFound": "No upcoming events found.",
+    "searchPlaceholder": "Search events…",
+    "until": "until",
+    "datePreset": {
+      "upcoming": "All upcoming",
+      "today": "Today",
+      "week": "This week",
+      "month": "This month",
+      "custom": "Custom range"
+    }
   },
   "eventDetail": {
     "notFound": "Event not found.",
@@ -113,18 +132,32 @@
     "until": "until",
     "aboutEvent": "About this event",
     "viewBusiness": "View business",
-    "share": "Share"
+    "share": "Share",
+    "toggleFavorite": "Toggle favorite",
+    "favoriteFailed": "Failed to update favorites. Please try again.",
+    "interestFailed": "Failed to update interest. Please try again.",
+    "interestedCount": "{count} interested",
+    "interested": "Interested",
+    "imInterested": "I'm interested"
   },
   "favorites": {
     "title": "Favorites",
     "subtitle": "Businesses you've saved.",
-    "noneYet": "No favorites yet — browse businesses and tap the heart to save one."
+    "noneYet": "No favorites yet — browse businesses and tap the heart to save one.",
+    "businesses": "Businesses",
+    "events": "Events",
+    "noEventsYet": "No favorite events yet — browse events and tap the heart to save one."
   },
   "notifications": {
     "title": "Notifications",
     "subtitle": "Stay up to date.",
     "markAllRead": "Mark all read",
-    "noneYet": "No notifications yet."
+    "noneYet": "No notifications yet.",
+    "clearAll": "Clear all",
+    "clearAllConfirm": "Clear all notifications? This can't be undone.",
+    "deleteNotification": "Delete notification",
+    "deleteFailed": "Couldn't delete notification. Please try again.",
+    "clearAllFailed": "Couldn't clear notifications. Please try again."
   },
   "profile": {
     "editProfile": "Edit profile",
@@ -145,7 +178,17 @@
     "changePicture": "Change picture",
     "uploadingPicture": "Uploading…",
     "pictureUpdated": "Profile picture updated.",
-    "pictureUploadFailed": "Failed to upload profile picture."
+    "pictureUploadFailed": "Failed to upload profile picture.",
+    "dangerZone": "Danger zone",
+    "deleteAccountWarning": "This permanently deletes your account. If you own any businesses or events, their listings, reviews and data are deleted too. This can't be undone.",
+    "deleteAccount": "Delete account",
+    "deleteAccountPasswordLabel": "Password",
+    "deleteAccountPasswordPlaceholder": "Enter your password to confirm",
+    "deleteAccountPasswordHelper": "Leave blank if you signed in with Google or Facebook.",
+    "confirmDeleteAccount": "Permanently delete my account",
+    "deleting": "Deleting…",
+    "cancel": "Cancel",
+    "deleteAccountFailed": "Failed to delete account. Please try again."
   },
   "dashboard": {
     "title": "My Businesses",
@@ -219,13 +262,6 @@
     "sendNotification": "Send Notification",
     "submittedForReview": "Submitted for review. An admin will review this before it's sent to every user.",
     "submitFailed": "Failed to submit notification."
-  },
-  "about": {
-    "tagline": "Discover local businesses & events around you",
-    "missionTitle": "Our mission",
-    "missionBody": "AlbMap connects communities with the local businesses and events that make their neighborhoods vibrant — making discovery effortless for guests and giving business owners the tools to reach the people around them.",
-    "visionTitle": "Our vision",
-    "visionBody": "To become the go-to platform for local discovery — one map, every community."
   },
   "contact": {
     "title": "Contact Us",

@@ -100,12 +100,31 @@
     "submitReview": "Dërgo vlerësimin",
     "noReviewsYet": "Ende nuk ka vlerësime.",
     "reviewSubmitFailed": "Dërgimi i vlerësimit dështoi. Ju lutem provoni përsëri.",
-    "favoriteFailed": "Përditësimi i të preferuarave dështoi. Ju lutem provoni përsëri."
+    "favoriteFailed": "Përditësimi i të preferuarave dështoi. Ju lutem provoni përsëri.",
+    "openNow": "Hapur tani",
+    "closedNow": "Mbyllur",
+    "writeAReview": "Shkruaj një vlerësim",
+    "editYourReview": "Ndrysho vlerësimin tënd",
+    "updateReview": "Përditëso vlerësimin",
+    "deleting": "Duke fshirë…",
+    "deleteReview": "Fshi vlerësimin",
+    "deleteReviewConfirm": "Të fshihet vlerësimi yt? Ky veprim nuk mund të kthehet mbrapsht.",
+    "reviewDeleteFailed": "Dështoi fshirja e vlerësimit. Ju lutem provoni përsëri.",
+    "you": "Ti"
   },
   "events": {
     "title": "Evente",
     "subtitle": "Zbulo çfarë po ndodh pranë teje.",
-    "noEventsFound": "Nuk u gjetën evente të ardhshme."
+    "noEventsFound": "Nuk u gjetën evente të ardhshme.",
+    "searchPlaceholder": "Kërko evente…",
+    "until": "deri",
+    "datePreset": {
+      "upcoming": "Të gjitha të ardhshmet",
+      "today": "Sot",
+      "week": "Këtë javë",
+      "month": "Këtë muaj",
+      "custom": "Interval i personalizuar"
+    }
   },
   "eventDetail": {
     "notFound": "Eventi nuk u gjet.",
@@ -113,18 +132,32 @@
     "until": "deri",
     "aboutEvent": "Rreth këtij eventi",
     "viewBusiness": "Shiko biznesin",
-    "share": "Ndaj"
+    "share": "Ndaj",
+    "toggleFavorite": "Ndrysho të preferuarën",
+    "favoriteFailed": "Dështoi përditësimi i të preferuarave. Ju lutem provoni përsëri.",
+    "interestFailed": "Dështoi përditësimi i interesit. Ju lutem provoni përsëri.",
+    "interestedCount": "{count} të interesuar",
+    "interested": "I interesuar",
+    "imInterested": "Jam i interesuar"
   },
   "favorites": {
     "title": "Të preferuarat",
     "subtitle": "Bizneset që ke ruajtur.",
-    "noneYet": "Ende nuk ka të preferuara — shfleto bizneset dhe prek zemrën për të ruajtur një."
+    "noneYet": "Ende nuk ka të preferuara — shfleto bizneset dhe prek zemrën për të ruajtur një.",
+    "businesses": "Biznese",
+    "events": "Evente",
+    "noEventsYet": "Ende pa evente të preferuara — shfleto eventet dhe prek zemrën për të ruajtur një."
   },
   "notifications": {
     "title": "Njoftimet",
     "subtitle": "Qëndro i/e përditësuar.",
     "markAllRead": "Shëno të gjitha si të lexuara",
-    "noneYet": "Ende nuk ka njoftime."
+    "noneYet": "Ende nuk ka njoftime.",
+    "clearAll": "Pastro të gjitha",
+    "clearAllConfirm": "Të pastrohen të gjitha njoftimet? Kjo nuk mund të zhbëhet.",
+    "deleteNotification": "Fshi njoftimin",
+    "deleteFailed": "Njoftimi nuk u fshi dot. Provo përsëri.",
+    "clearAllFailed": "Njoftimet nuk u pastruan dot. Provo përsëri."
   },
   "profile": {
     "editProfile": "Modifiko profilin",
@@ -145,7 +178,17 @@
     "changePicture": "Ndrysho foton",
     "uploadingPicture": "Duke ngarkuar…",
     "pictureUpdated": "Fotoja e profilit u përditësua.",
-    "pictureUploadFailed": "Ngarkimi i fotos së profilit dështoi."
+    "pictureUploadFailed": "Ngarkimi i fotos së profilit dështoi.",
+    "dangerZone": "Zona e rrezikut",
+    "deleteAccountWarning": "Kjo do të fshijë përgjithmonë llogarinë tënde. Nëse zotëron biznese ose evente, do të fshihen edhe listimet, vlerësimet dhe të dhënat e tyre. Ky veprim nuk mund të kthehet mbrapsht.",
+    "deleteAccount": "Fshi llogarinë",
+    "deleteAccountPasswordLabel": "Fjalëkalimi",
+    "deleteAccountPasswordPlaceholder": "Vendos fjalëkalimin tënd për të konfirmuar",
+    "deleteAccountPasswordHelper": "Lëre bosh nëse je regjistruar me Google ose Facebook.",
+    "confirmDeleteAccount": "Fshi përgjithmonë llogarinë time",
+    "deleting": "Duke fshirë…",
+    "cancel": "Anulo",
+    "deleteAccountFailed": "Dështoi fshirja e llogarisë. Ju lutem provoni përsëri."
   },
   "dashboard": {
     "title": "Bizneset e Mia",
@@ -219,13 +262,6 @@
     "sendNotification": "Dërgo Njoftimin",
     "submittedForReview": "U dërgua për shqyrtim. Një administrator do ta shqyrtojë para se t'u dërgohet të gjithë përdoruesve.",
     "submitFailed": "Dërgimi i njoftimit dështoi."
-  },
-  "about": {
-    "tagline": "Zbulo bizneset dhe eventet lokale rreth teje",
-    "missionTitle": "Misioni ynë",
-    "missionBody": "AlbMap lidh komunitetet me bizneset dhe eventet lokale që i bëjnë lagjet e tyre të gjalla — duke e bërë zbulimin të lehtë për vizitorët dhe duke u dhënë pronarëve të bizneseve mjetet për të arritur njerëzit rreth tyre.",
-    "visionTitle": "Vizioni ynë",
-    "visionBody": "Të bëhemi platforma kryesore për zbulimin lokal — një hartë, çdo komunitet."
   },
   "contact": {
     "title": "Na Kontaktoni",
