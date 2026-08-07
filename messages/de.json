@@ -263,13 +263,6 @@
     "submittedForReview": "Zur Prüfung eingereicht. Ein Administrator prüft dies, bevor es an alle Nutzer gesendet wird.",
     "submitFailed": "Benachrichtigung konnte nicht gesendet werden."
   },
-  "about": {
-    "tagline": "Entdecke lokale Unternehmen & Veranstaltungen in deiner Nähe",
-    "missionTitle": "Unsere Mission",
-    "missionBody": "AlbMap verbindet Gemeinschaften mit den lokalen Unternehmen und Veranstaltungen, die ihre Viertel lebendig machen — es macht die Entdeckung für Besucher mühelos und gibt Unternehmern die Werkzeuge, um die Menschen in ihrer Umgebung zu erreichen.",
-    "visionTitle": "Unsere Vision",
-    "visionBody": "Die führende Plattform für lokale Entdeckungen zu werden — eine Karte, jede Gemeinschaft."
-  },
   "contact": {
     "title": "Kontakt",
     "subtitle": "Wir freuen uns von dir zu hören.",

@@ -103,3 +103,44 @@ export interface BusinessAnalytics {
   favoriteCount: number;
   last7DaysProfileClicks: number[];
 }
+
+// ---------------- Site content ----------------
+// Mirrors albmap-backend's site_content table (see content.service.js) —
+// About Us, social links, Privacy Policy, and Terms & Conditions used to
+// be hardcoded here as next-intl messages/literal JSX; now they're
+// admin-editable from the admin portal's Content page and fetched live.
+
+export interface AboutContent {
+  tagline: string;
+  missionTitle: string;
+  missionBody: string;
+  visionTitle: string;
+  visionBody: string;
+}
+
+export interface SocialLinks {
+  facebook: string | null;
+  instagram: string | null;
+  twitter: string | null;
+  tiktok: string | null;
+  youtube: string | null;
+  linkedin: string | null;
+}
+
+export interface LegalSection {
+  heading: string;
+  body: string;
+}
+
+export interface LegalPageContent {
+  title: string;
+  sections: LegalSection[];
+  updatedAt?: string;
+}
+
+export interface SiteContent {
+  aboutUs: AboutContent | null;
+  socialLinks: SocialLinks | null;
+  privacyPolicy: LegalPageContent | null;
+  termsConditions: LegalPageContent | null;
+}

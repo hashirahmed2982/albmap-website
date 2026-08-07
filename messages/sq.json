@@ -263,13 +263,6 @@
     "submittedForReview": "U dërgua për shqyrtim. Një administrator do ta shqyrtojë para se t'u dërgohet të gjithë përdoruesve.",
     "submitFailed": "Dërgimi i njoftimit dështoi."
   },
-  "about": {
-    "tagline": "Zbulo bizneset dhe eventet lokale rreth teje",
-    "missionTitle": "Misioni ynë",
-    "missionBody": "AlbMap lidh komunitetet me bizneset dhe eventet lokale që i bëjnë lagjet e tyre të gjalla — duke e bërë zbulimin të lehtë për vizitorët dhe duke u dhënë pronarëve të bizneseve mjetet për të arritur njerëzit rreth tyre.",
-    "visionTitle": "Vizioni ynë",
-    "visionBody": "Të bëhemi platforma kryesore për zbulimin lokal — një hartë, çdo komunitet."
-  },
   "contact": {
     "title": "Na Kontaktoni",
     "subtitle": "Do të donim të dëgjonim nga ju.",

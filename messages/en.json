@@ -263,13 +263,6 @@
     "submittedForReview": "Submitted for review. An admin will review this before it's sent to every user.",
     "submitFailed": "Failed to submit notification."
   },
-  "about": {
-    "tagline": "Discover local businesses & events around you",
-    "missionTitle": "Our mission",
-    "missionBody": "AlbMap connects communities with the local businesses and events that make their neighborhoods vibrant — making discovery effortless for guests and giving business owners the tools to reach the people around them.",
-    "visionTitle": "Our vision",
-    "visionBody": "To become the go-to platform for local discovery — one map, every community."
-  },
   "contact": {
     "title": "Contact Us",
     "subtitle": "We'd love to hear from you.",

@@ -1,11 +1,32 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { MapPin } from "lucide-react";
+import { MapPin, Facebook, Instagram, Twitter, Youtube, Linkedin, Music2 } from "lucide-react";
+import { getContent } from "@/lib/content-api";
+import type { SocialLinks } from "@/lib/types";
+
+const SOCIAL_ICONS: { key: keyof SocialLinks; Icon: typeof Facebook; label: string }[] = [
+  { key: "facebook", Icon: Facebook, label: "Facebook" },
+  { key: "instagram", Icon: Instagram, label: "Instagram" },
+  { key: "twitter", Icon: Twitter, label: "Twitter / X" },
+  { key: "tiktok", Icon: Music2, label: "TikTok" },
+  { key: "youtube", Icon: Youtube, label: "YouTube" },
+  { key: "linkedin", Icon: Linkedin, label: "LinkedIn" },
+];
 
 export function Footer() {
   const t = useTranslations("footer");
+  const [social, setSocial] = useState<SocialLinks | null>(null);
+
+  useEffect(() => {
+    // Best-effort — a footer decoration failing to load shouldn't show an
+    // error anywhere; it just means no social icons render this time.
+    getContent()
+      .then((content) => setSocial(content.socialLinks))
+      .catch(() => {});
+  }, []);
 
   return (
     <footer className="border-t border-line bg-surface">
@@ -24,6 +45,23 @@ export function Footer() {
             <Link href="/privacy" className="hover:text-primary">{t("privacyPolicy")}</Link>
             <Link href="/terms" className="hover:text-primary">{t("termsConditions")}</Link>
           </nav>
+
+          {social && (
+            <div className="flex items-center gap-3">
+              {SOCIAL_ICONS.filter(({ key }) => social[key]).map(({ key, Icon, label }) => (
+                <a
+                  key={key}
+                  href={social[key]!}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={label}
+                  className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary hover:bg-primary/20"
+                >
+                  <Icon size={15} />
+                </a>
+              ))}
+            </div>
+          )}
         </div>
 
         <p className="mt-8 text-center text-xs text-ink-soft sm:text-left">
