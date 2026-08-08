@@ -74,14 +74,27 @@ function DashboardContent() {
               </Link>
             </div>
           ) : (
-            businesses.map((b) => (
+            businesses.map((b) => {
+              // isActive only ever means something once a listing is
+              // approved — pending/rejected were never live to begin
+              // with. Without this, an admin deactivating a business gave
+              // the owner literally no signal here: it still showed the
+              // same green "approved" badge as a normal live listing,
+              // even though it had actually been pulled from the public
+              // map and search.
+              const isDeactivated = b.status === "approved" && b.isActive === false;
+              return (
               <div key={b.id} className="rounded-2xl bg-surface p-5 shadow-soft">
                 <div className="flex items-start justify-between gap-4">
                   <div className="min-w-0">
                     <div className="flex items-center gap-2">
                       <h3 className="font-display font-semibold text-ink">{b.name}</h3>
-                      <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${STATUS_STYLES[b.status]}`}>
-                        {STATUS_LABELS[b.status]}
+                      <span
+                        className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                          isDeactivated ? "bg-ink-soft/10 text-ink-soft" : STATUS_STYLES[b.status]
+                        }`}
+                      >
+                        {isDeactivated ? t("deactivatedStatus") : STATUS_LABELS[b.status]}
                       </span>
                     </div>
                     <p className="mt-1 text-sm" style={{ color: categoryColor(b.category) }}>{b.category}</p>
@@ -91,6 +104,9 @@ function DashboardContent() {
                     )}
                     {b.status === "rejected" && (
                       <p className="mt-2 text-xs text-ink-soft">{t("rejectedNote")}</p>
+                    )}
+                    {isDeactivated && (
+                      <p className="mt-2 text-xs text-ink-soft">{t("deactivatedNote")}</p>
                     )}
                   </div>
                   <div className="flex shrink-0 gap-2">
@@ -103,7 +119,8 @@ function DashboardContent() {
                   </div>
                 </div>
               </div>
-            ))
+              );
+            })
           )}
         </div>
       </div>

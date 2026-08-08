@@ -208,6 +208,8 @@
     "rejectedStatus": "rejected",
     "pendingNote": "An admin will review this listing shortly. You'll be notified once it's approved.",
     "rejectedNote": "This submission was rejected. Edit and resubmit, or contact support for details.",
+    "deactivatedStatus": "deactivated",
+    "deactivatedNote": "An admin deactivated this listing — it's hidden from the map and search until reactivated. Contact support if you believe this was a mistake.",
     "addEventButton": "Add event"
   },
   "addBusiness": {
@@ -243,6 +245,7 @@
   "editBusiness": {
     "title": "Edit Business",
     "reviewNotice": "Changing name, category, address, or location will send this back for admin re-review. Phone, hours, and description can be edited freely.",
+    "reviewNoticeRejected": "This listing was rejected. Saving any change here — including just the logo — resubmits it for review.",
     "notFound": "Business not found.",
     "savedPending": "Saved — sent back for admin review.",
     "saved": "Saved.",
