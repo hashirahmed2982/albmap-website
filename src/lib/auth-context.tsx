@@ -9,7 +9,10 @@ interface AuthContextValue {
   user: User | null;
   isLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
-  signup: (email: string, password: string, name: string) => Promise<void>;
+  /** Step 1 — sends the OTP. Doesn't sign the user in yet. */
+  requestSignup: (email: string, password: string, name: string) => Promise<void>;
+  /** Step 2 — the code from that email. This is what actually signs the user in. */
+  verifySignupOtp: (email: string, otp: string) => Promise<void>;
   loginWithGoogle: (idToken: string) => Promise<void>;
   loginWithFacebook: (accessToken: string) => Promise<void>;
   logout: () => Promise<void>;
@@ -51,8 +54,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(loggedInUser);
   }, []);
 
-  const signup = useCallback(async (email: string, password: string, name: string) => {
-    const newUser = await authApi.signup(email, password, name);
+  const requestSignup = useCallback(async (email: string, password: string, name: string) => {
+    await authApi.requestSignupOtp(email, password, name);
+  }, []);
+
+  const verifySignupOtp = useCallback(async (email: string, otp: string) => {
+    const newUser = await authApi.verifySignupOtp(email, otp);
     setUser(newUser);
   }, []);
 
@@ -87,7 +94,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         user,
         isLoading,
         login,
-        signup,
+        requestSignup,
+        verifySignupOtp,
         loginWithGoogle,
         loginWithFacebook,
         logout,

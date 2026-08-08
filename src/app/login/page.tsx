@@ -22,15 +22,21 @@ const PIN_CATEGORIES = [
 export default function LoginPage() {
   const router = useRouter();
   const t = useTranslations("auth");
-  const { login, signup, loginWithGoogle, loginWithFacebook } = useAuth();
+  const { login, requestSignup, verifySignupOtp, loginWithGoogle, loginWithFacebook } = useAuth();
   const { showToast } = useToast();
 
-  const [mode, setMode] = useState<"login" | "signup">("login");
+  // "verify-otp" only ever follows "signup" — requestSignup succeeded
+  // (the code was emailed) but no account exists yet until the code is
+  // entered. email/password/name stay in state across that transition
+  // since verify-otp's UI (and a "resend code" retry) needs them.
+  const [mode, setMode] = useState<"login" | "signup" | "verify-otp">("login");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [otp, setOtp] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isResending, setIsResending] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = useCallback(
@@ -39,12 +45,17 @@ export default function LoginPage() {
       setError(null);
       setIsSubmitting(true);
       try {
-        if (mode === "signup") {
-          await signup(email, password, name);
+        if (mode === "verify-otp") {
+          await verifySignupOtp(email, otp);
+          router.push("/");
+        } else if (mode === "signup") {
+          await requestSignup(email, password, name);
+          setOtp("");
+          setMode("verify-otp");
         } else {
           await login(email, password);
+          router.push("/");
         }
-        router.push("/");
       } catch (err) {
         const message = err instanceof ApiError ? err.message : t("somethingWrong");
         setError(message);
@@ -53,8 +64,23 @@ export default function LoginPage() {
         setIsSubmitting(false);
       }
     },
-    [mode, email, password, name, login, signup, router, t, showToast],
+    [mode, email, password, name, otp, login, requestSignup, verifySignupOtp, router, t, showToast],
   );
+
+  const handleResendCode = useCallback(async () => {
+    setError(null);
+    setIsResending(true);
+    try {
+      await requestSignup(email, password, name);
+      showToast(t("codeResent"), "success");
+    } catch (err) {
+      const message = err instanceof ApiError ? err.message : t("somethingWrong");
+      setError(message);
+      showToast(message, "error");
+    } finally {
+      setIsResending(false);
+    }
+  }, [email, password, name, requestSignup, t, showToast]);
 
   const handleGoogleToken = useCallback(
     async (idToken: string) => {
@@ -111,119 +137,178 @@ export default function LoginPage() {
 
         <div className="rounded-3xl bg-surface p-8 shadow-soft">
           <h1 className="font-display text-2xl font-bold text-ink">
-            {mode === "signup" ? t("createAccount") : t("welcomeBack")}
+            {mode === "verify-otp" ? t("verifyEmailTitle") : mode === "signup" ? t("createAccount") : t("welcomeBack")}
           </h1>
           <p className="mt-1 text-sm text-ink-soft">
-            {mode === "signup" ? t("signupSubtitle") : t("loginSubtitle")}
+            {mode === "verify-otp"
+              ? t("verifyEmailSubtitle", { email })
+              : mode === "signup"
+                ? t("signupSubtitle")
+                : t("loginSubtitle")}
           </p>
 
           <form onSubmit={handleSubmit} className="mt-6 space-y-4">
             {error && <div className="rounded-xl bg-error/10 px-4 py-3 text-sm text-error">{error}</div>}
 
-            {mode === "signup" && (
+            {mode === "verify-otp" ? (
               <div>
-                <label htmlFor="name" className="mb-1.5 block text-sm font-medium text-ink">
-                  {t("fullName")}
+                <label htmlFor="otp" className="mb-1.5 block text-sm font-medium text-ink">
+                  {t("verificationCode")}
                 </label>
                 <input
-                  id="name"
+                  id="otp"
                   type="text"
-                  required
-                  maxLength={150}
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="w-full rounded-xl border border-line bg-paper px-4 py-3 text-sm text-ink outline-none transition-colors focus:border-primary"
-                />
-              </div>
-            )}
-
-            <div>
-              <label htmlFor="email" className="mb-1.5 block text-sm font-medium text-ink">
-                {t("email")}
-              </label>
-              <input
-                id="email"
-                type="email"
-                required
-                maxLength={255}
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full rounded-xl border border-line bg-paper px-4 py-3 text-sm text-ink outline-none transition-colors focus:border-primary"
-              />
-            </div>
-
-            <div>
-              <div className="mb-1.5 flex items-center justify-between">
-                <label htmlFor="password" className="block text-sm font-medium text-ink">
-                  {t("password")}
-                </label>
-                {mode === "login" && (
-                  <Link href="/forgot-password" className="text-xs font-medium text-primary hover:underline">
-                    {t("forgotPasswordLink")}
-                  </Link>
-                )}
-              </div>
-              <div className="relative">
-                <input
-                  id="password"
-                  type={showPassword ? "text" : "password"}
+                  inputMode="numeric"
+                  autoComplete="one-time-code"
                   required
                   minLength={6}
-                  maxLength={72}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full rounded-xl border border-line bg-paper px-4 py-3 pr-11 text-sm text-ink outline-none transition-colors focus:border-primary"
+                  maxLength={6}
+                  pattern="\d{6}"
+                  value={otp}
+                  onChange={(e) => setOtp(e.target.value.replace(/\D/g, "").slice(0, 6))}
+                  className="w-full rounded-xl border border-line bg-paper px-4 py-3 text-center text-lg tracking-[0.5em] text-ink outline-none transition-colors focus:border-primary"
+                  autoFocus
                 />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword((v) => !v)}
-                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-ink-soft"
-                  aria-label={showPassword ? t("hidePassword") : t("showPassword")}
-                >
-                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                </button>
               </div>
-            </div>
+            ) : (
+              <>
+                {mode === "signup" && (
+                  <div>
+                    <label htmlFor="name" className="mb-1.5 block text-sm font-medium text-ink">
+                      {t("fullName")}
+                    </label>
+                    <input
+                      id="name"
+                      type="text"
+                      required
+                      maxLength={150}
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      className="w-full rounded-xl border border-line bg-paper px-4 py-3 text-sm text-ink outline-none transition-colors focus:border-primary"
+                    />
+                  </div>
+                )}
+
+                <div>
+                  <label htmlFor="email" className="mb-1.5 block text-sm font-medium text-ink">
+                    {t("email")}
+                  </label>
+                  <input
+                    id="email"
+                    type="email"
+                    required
+                    maxLength={255}
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="w-full rounded-xl border border-line bg-paper px-4 py-3 text-sm text-ink outline-none transition-colors focus:border-primary"
+                  />
+                </div>
+
+                <div>
+                  <div className="mb-1.5 flex items-center justify-between">
+                    <label htmlFor="password" className="block text-sm font-medium text-ink">
+                      {t("password")}
+                    </label>
+                    {mode === "login" && (
+                      <Link href="/forgot-password" className="text-xs font-medium text-primary hover:underline">
+                        {t("forgotPasswordLink")}
+                      </Link>
+                    )}
+                  </div>
+                  <div className="relative">
+                    <input
+                      id="password"
+                      type={showPassword ? "text" : "password"}
+                      required
+                      minLength={6}
+                      maxLength={72}
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="w-full rounded-xl border border-line bg-paper px-4 py-3 pr-11 text-sm text-ink outline-none transition-colors focus:border-primary"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword((v) => !v)}
+                      className="absolute right-3.5 top-1/2 -translate-y-1/2 text-ink-soft"
+                      aria-label={showPassword ? t("hidePassword") : t("showPassword")}
+                    >
+                      {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                    </button>
+                  </div>
+                </div>
+              </>
+            )}
 
             <button
               type="submit"
               disabled={isSubmitting}
               className="w-full rounded-full bg-primary py-3 text-sm font-semibold text-white shadow-lift transition-transform hover:scale-[1.01] active:scale-[0.99] disabled:opacity-60"
             >
-              {isSubmitting ? t("pleaseWait") : mode === "signup" ? t("signUp") : t("logIn")}
+              {isSubmitting
+                ? t("pleaseWait")
+                : mode === "verify-otp"
+                  ? t("verifyButton")
+                  : mode === "signup"
+                    ? t("signUp")
+                    : t("logIn")}
             </button>
           </form>
 
-          <div className="my-6 flex items-center gap-3">
-            <div className="h-px flex-1 bg-line" />
-            <span className="text-xs text-ink-soft">{t("or")}</span>
-            <div className="h-px flex-1 bg-line" />
-          </div>
+          {mode === "verify-otp" ? (
+            <div className="mt-6 flex items-center justify-between text-sm">
+              <button
+                type="button"
+                onClick={() => {
+                  setMode("signup");
+                  setError(null);
+                }}
+                className="text-ink-soft hover:underline"
+              >
+                {t("useAnotherEmail")}
+              </button>
+              <button
+                type="button"
+                onClick={handleResendCode}
+                disabled={isResending}
+                className="font-medium text-primary hover:underline disabled:opacity-60"
+              >
+                {isResending ? t("pleaseWait") : t("resendCode")}
+              </button>
+            </div>
+          ) : (
+            <>
+              <div className="my-6 flex items-center gap-3">
+                <div className="h-px flex-1 bg-line" />
+                <span className="text-xs text-ink-soft">{t("or")}</span>
+                <div className="h-px flex-1 bg-line" />
+              </div>
 
-          <div className="space-y-3">
-            <GoogleSignInButton onIdToken={handleGoogleToken} onError={setError} />
-            <FacebookSignInButton onAccessToken={handleFacebookToken} onError={setError} />
-          </div>
+              <div className="space-y-3">
+                <GoogleSignInButton onIdToken={handleGoogleToken} onError={setError} />
+                <FacebookSignInButton onAccessToken={handleFacebookToken} onError={setError} />
+              </div>
 
-          <button
-            type="button"
-            onClick={() => {
-              setMode((m) => (m === "login" ? "signup" : "login"));
-              setError(null);
-            }}
-            className="mt-6 w-full text-center text-sm text-ink-soft"
-          >
-            {mode === "signup" ? (
-              <>
-                {t("alreadyHaveAccount")} <span className="font-medium text-primary">{t("logInLink")}</span>
-              </>
-            ) : (
-              <>
-                {t("noAccount")}{" "}
-                <span className="font-medium text-primary">{t("signUpAsBusiness")}</span>
-              </>
-            )}
-          </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setMode((m) => (m === "login" ? "signup" : "login"));
+                  setError(null);
+                }}
+                className="mt-6 w-full text-center text-sm text-ink-soft"
+              >
+                {mode === "signup" ? (
+                  <>
+                    {t("alreadyHaveAccount")} <span className="font-medium text-primary">{t("logInLink")}</span>
+                  </>
+                ) : (
+                  <>
+                    {t("noAccount")}{" "}
+                    <span className="font-medium text-primary">{t("signUpAsBusiness")}</span>
+                  </>
+                )}
+              </button>
+            </>
+          )}
         </div>
       </div>
     </div>

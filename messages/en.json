@@ -55,7 +55,14 @@
     "signUpAsBusiness": "Sign up as Business",
     "somethingWrong": "Something went wrong. Please try again.",
     "googleSignInFailed": "Google sign-in failed.",
-    "facebookSignInFailed": "Facebook sign-in failed."
+    "facebookSignInFailed": "Facebook sign-in failed.",
+    "verifyEmailTitle": "Verify your email",
+    "verifyEmailSubtitle": "We sent a 6-digit code to {email}. Enter it below to finish creating your account.",
+    "verificationCode": "Verification code",
+    "verifyButton": "Verify & Create Account",
+    "resendCode": "Resend code",
+    "codeResent": "A new code has been sent.",
+    "useAnotherEmail": "Use a different email"
   },
   "forgotPassword": {
     "title": "Reset your password",
