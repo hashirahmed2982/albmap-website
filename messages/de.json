@@ -208,6 +208,8 @@
     "rejectedStatus": "abgelehnt",
     "pendingNote": "Ein Administrator wird diesen Eintrag in Kürze prüfen. Du wirst benachrichtigt, sobald er genehmigt ist.",
     "rejectedNote": "Diese Einreichung wurde abgelehnt. Bearbeite und reiche erneut ein, oder kontaktiere den Support für Details.",
+    "deactivatedStatus": "deaktiviert",
+    "deactivatedNote": "Ein Administrator hat diesen Eintrag deaktiviert — er ist auf der Karte und in der Suche verborgen, bis er reaktiviert wird. Kontaktiere den Support, falls du glaubst, dass dies ein Fehler war.",
     "addEventButton": "Veranstaltung hinzufügen"
   },
   "addBusiness": {
@@ -243,6 +245,7 @@
   "editBusiness": {
     "title": "Unternehmen bearbeiten",
     "reviewNotice": "Das Ändern von Name, Kategorie, Adresse oder Standort sendet dies zur erneuten Prüfung durch einen Administrator zurück. Telefonnummer, Öffnungszeiten und Beschreibung können frei bearbeitet werden.",
+    "reviewNoticeRejected": "Dieser Eintrag wurde abgelehnt. Jede hier gespeicherte Änderung — auch nur das Logo — reicht ihn erneut zur Prüfung ein.",
     "notFound": "Unternehmen nicht gefunden.",
     "savedPending": "Gespeichert — zur erneuten Prüfung durch einen Administrator gesendet.",
     "saved": "Gespeichert.",

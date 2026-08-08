@@ -49,6 +49,13 @@ export interface Business {
   rating: number | null;
   ratingCount: number;
   distanceKm?: number;
+  // Only ever populated for GET /businesses?ownerId=... (getMyBusinesses)
+  // — an owner's own view of their listings, where "approved but
+  // deactivated by an admin" needs to be visible. The public discovery
+  // feed never returns a deactivated business in the first place, so
+  // this is always omitted there — undefined, not false, is the correct
+  // "not applicable here" state.
+  isActive?: boolean;
 }
 
 export interface EventItem {

@@ -1,15 +1,18 @@
 "use client";
 
-import { useState, useEffect, useCallback, use as usePromise } from "react";
+import { useState, useEffect, useCallback, useRef, use as usePromise } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { useTranslations } from "next-intl";
+import { Upload } from "lucide-react";
 import { Header } from "@/components/Header";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { OpeningHoursEditor } from "@/components/OpeningHoursEditor";
 import { LocationPickerClient } from "@/components/LocationPickerClient";
 import { getCategories } from "@/lib/category-api";
-import { getBusinessById, updateBusiness } from "@/lib/business-api";
+import { getBusinessById, updateBusiness, uploadLogo } from "@/lib/business-api";
 import { ApiError } from "@/lib/api";
+import { resolveMediaUrl } from "@/lib/format";
 import { useToast } from "@/lib/toast-context";
 import type { Business, Category } from "@/lib/types";
 
@@ -22,6 +25,7 @@ function EditBusinessContent({ id }: { id: string }) {
   const tf = useTranslations("addBusiness");
   const t = useTranslations("editBusiness");
   const { showToast } = useToast();
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [original, setOriginal] = useState<Business | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -37,6 +41,14 @@ function EditBusinessContent({ id }: { id: string }) {
   const [whatsapp, setWhatsapp] = useState("");
   const [location, setLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [openingHours, setOpeningHours] = useState<Record<string, string>>({});
+  // logoUrl is what actually gets saved — starts as whatever the listing
+  // already has, and is only ever replaced once a new upload finishes.
+  // logoPreview is purely visual (what's shown in the picker), seeded
+  // from the same resolved URL so an existing logo shows immediately
+  // rather than the form looking like it has none.
+  const [logoUrl, setLogoUrl] = useState<string | null>(null);
+  const [logoPreview, setLogoPreview] = useState<string | null>(null);
+  const [isUploadingLogo, setIsUploadingLogo] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [showReviewWarning, setShowReviewWarning] = useState(false);
@@ -57,9 +69,29 @@ function EditBusinessContent({ id }: { id: string }) {
         setWhatsapp(biz.whatsappNumber || "");
         setLocation({ lat: biz.latitude, lng: biz.longitude });
         setOpeningHours(biz.openingHours);
+        setLogoUrl(biz.logoUrl || null);
+        setLogoPreview(resolveMediaUrl(biz.logoUrl));
       })
       .finally(() => setIsLoading(false));
   }, [id]);
+
+  const handleLogoChange = useCallback(
+    async (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      setLogoPreview(URL.createObjectURL(file));
+      setIsUploadingLogo(true);
+      try {
+        const url = await uploadLogo(file);
+        setLogoUrl(url);
+      } catch {
+        showToast(tf("logoUploadFailed"), "error");
+      } finally {
+        setIsUploadingLogo(false);
+      }
+    },
+    [tf, showToast],
+  );
 
   const touchesSensitiveField = useCallback(() => {
     if (!original) return false;
@@ -83,7 +115,8 @@ function EditBusinessContent({ id }: { id: string }) {
       const updated = await updateBusiness(id, {
         name, description: description || undefined, category, streetAddress, city, postalCode, country,
         latitude: location.lat, longitude: location.lng,
-        phone: phone || undefined, whatsappNumber: whatsapp || undefined, openingHours,
+        phone: phone || undefined, whatsappNumber: whatsapp || undefined,
+        logoUrl: logoUrl || undefined, openingHours,
       });
       const successMessage = updated.status === "pending" ? t("savedPending") : t("saved");
       setMessage(successMessage);
@@ -96,7 +129,7 @@ function EditBusinessContent({ id }: { id: string }) {
     } finally {
       setIsSubmitting(false);
     }
-  }, [id, name, description, category, streetAddress, city, postalCode, country, location, phone, whatsapp, openingHours, router, t, showToast]);
+  }, [id, name, description, category, streetAddress, city, postalCode, country, location, phone, whatsapp, logoUrl, openingHours, router, t, showToast]);
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -133,11 +166,35 @@ function EditBusinessContent({ id }: { id: string }) {
       <div className="mx-auto max-w-2xl px-6 py-8">
         <h1 className="font-display text-3xl font-bold text-ink">{t("title")}</h1>
 
-        <div className="mt-4 rounded-xl bg-info/10 px-4 py-3 text-xs text-info">{t("reviewNotice")}</div>
+        <div className="mt-4 rounded-xl bg-info/10 px-4 py-3 text-xs text-info">
+          {original.status === "rejected" ? t("reviewNoticeRejected") : t("reviewNotice")}
+        </div>
 
         {message && <div className="mt-4 rounded-xl bg-primary/10 px-4 py-3 text-sm text-primary">{message}</div>}
 
         <form onSubmit={handleSubmit} className="mt-6 space-y-5 rounded-2xl bg-surface p-6 shadow-soft">
+          <button
+            type="button"
+            onClick={() => fileInputRef.current?.click()}
+            className="flex h-32 w-full items-center justify-center overflow-hidden rounded-2xl border-2 border-dashed border-line bg-paper"
+          >
+            {logoPreview ? (
+              <Image src={logoPreview} alt="Logo preview" width={128} height={128} className="h-full w-full object-cover" />
+            ) : (
+              <div className="flex flex-col items-center gap-2 text-ink-soft">
+                {isUploadingLogo ? (
+                  <div className="h-6 w-6 animate-spin rounded-full border-2 border-line border-t-primary" />
+                ) : (
+                  <>
+                    <Upload size={22} />
+                    <span className="text-xs">{tf("addLogo")}</span>
+                  </>
+                )}
+              </div>
+            )}
+          </button>
+          <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleLogoChange} />
+
           <Field label={tf("businessName")}>
             <input required maxLength={30} value={name} onChange={(e) => setName(e.target.value)} className={inputClass} />
           </Field>
