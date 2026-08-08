@@ -12,10 +12,26 @@ export async function login(email: string, password: string): Promise<User> {
   return res.user;
 }
 
-export async function signup(email: string, password: string, name: string): Promise<User> {
-  const res = await apiFetch<AuthResponse>("/auth/signup", {
+/**
+ * Step 1 of signup — emails a 6-digit code and does NOT create an
+ * account or return a session. This is deliberate: the backend proves
+ * the email is real before it ever occupies that account slot, so a
+ * mistyped/fake address never blocks the real owner from signing up
+ * later. Call `verifySignupOtp` with the code to actually finish.
+ */
+export async function requestSignupOtp(email: string, password: string, name: string): Promise<void> {
+  await apiFetch<{ message: string }>("/auth/signup", {
     method: "POST",
     body: { email, password, name },
+    skipAuth: true,
+  });
+}
+
+/** Step 2 — the code from that email. This is what actually creates the account. */
+export async function verifySignupOtp(email: string, otp: string): Promise<User> {
+  const res = await apiFetch<AuthResponse>("/auth/signup/verify", {
+    method: "POST",
+    body: { email, otp },
     skipAuth: true,
   });
   storeTokens(res.accessToken, res.refreshToken);

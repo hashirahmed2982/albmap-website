@@ -55,7 +55,14 @@
     "signUpAsBusiness": "Als Unternehmen registrieren",
     "somethingWrong": "Etwas ist schiefgelaufen. Bitte versuche es erneut.",
     "googleSignInFailed": "Google-Anmeldung fehlgeschlagen.",
-    "facebookSignInFailed": "Facebook-Anmeldung fehlgeschlagen."
+    "facebookSignInFailed": "Facebook-Anmeldung fehlgeschlagen.",
+    "verifyEmailTitle": "Bestätige deine E-Mail",
+    "verifyEmailSubtitle": "Wir haben einen 6-stelligen Code an {email} gesendet. Gib ihn unten ein, um dein Konto zu erstellen.",
+    "verificationCode": "Bestätigungscode",
+    "verifyButton": "Bestätigen & Konto erstellen",
+    "resendCode": "Code erneut senden",
+    "codeResent": "Ein neuer Code wurde gesendet.",
+    "useAnotherEmail": "Andere E-Mail verwenden"
   },
   "forgotPassword": {
     "title": "Passwort zurücksetzen",
