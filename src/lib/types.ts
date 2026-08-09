@@ -56,6 +56,13 @@ export interface Business {
   // this is always omitted there — undefined, not false, is the correct
   // "not applicable here" state.
   isActive?: boolean;
+  // The admin's own written explanation — mandatory on their end for a
+  // rejection or deactivation (see the admin portal's ConfirmModal) — so
+  // these are the actual reason text, not a generic "contact support"
+  // note. Same isActive-style scoping: only ever populated on the
+  // owner's own view.
+  rejectionReason?: string | null;
+  deactivationReason?: string | null;
 }
 
 export interface EventItem {
