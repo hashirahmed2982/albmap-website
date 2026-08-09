@@ -208,8 +208,10 @@
     "rejectedStatus": "abgelehnt",
     "pendingNote": "Ein Administrator wird diesen Eintrag in Kürze prüfen. Du wirst benachrichtigt, sobald er genehmigt ist.",
     "rejectedNote": "Diese Einreichung wurde abgelehnt. Bearbeite und reiche erneut ein, oder kontaktiere den Support für Details.",
+    "rejectedReasonLabel": "Grund:",
     "deactivatedStatus": "deaktiviert",
     "deactivatedNote": "Ein Administrator hat diesen Eintrag deaktiviert — er ist auf der Karte und in der Suche verborgen, bis er reaktiviert wird. Kontaktiere den Support, falls du glaubst, dass dies ein Fehler war.",
+    "deactivatedReasonLabel": "Grund:",
     "addEventButton": "Veranstaltung hinzufügen"
   },
   "addBusiness": {

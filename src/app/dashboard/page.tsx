@@ -103,10 +103,32 @@ function DashboardContent() {
                       <p className="mt-2 text-xs text-ink-soft">{t("pendingNote")}</p>
                     )}
                     {b.status === "rejected" && (
-                      <p className="mt-2 text-xs text-ink-soft">{t("rejectedNote")}</p>
+                      <p className="mt-2 text-xs text-ink-soft">
+                        {/* The admin's own reason is now mandatory on their end
+                            (see the admin portal's ConfirmModal) — the generic
+                            fallback only ever applies to older rejections from
+                            before that requirement existed. */}
+                        {b.rejectionReason ? (
+                          <>
+                            <span className="font-medium text-error">{t("rejectedReasonLabel")}</span>{" "}
+                            {b.rejectionReason}
+                          </>
+                        ) : (
+                          t("rejectedNote")
+                        )}
+                      </p>
                     )}
                     {isDeactivated && (
-                      <p className="mt-2 text-xs text-ink-soft">{t("deactivatedNote")}</p>
+                      <p className="mt-2 text-xs text-ink-soft">
+                        {b.deactivationReason ? (
+                          <>
+                            <span className="font-medium text-ink">{t("deactivatedReasonLabel")}</span>{" "}
+                            {b.deactivationReason}
+                          </>
+                        ) : (
+                          t("deactivatedNote")
+                        )}
+                      </p>
                     )}
                   </div>
                   <div className="flex shrink-0 gap-2">
