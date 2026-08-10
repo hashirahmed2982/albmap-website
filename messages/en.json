@@ -208,10 +208,8 @@
     "rejectedStatus": "rejected",
     "pendingNote": "An admin will review this listing shortly. You'll be notified once it's approved.",
     "rejectedNote": "This submission was rejected. Edit and resubmit, or contact support for details.",
-    "rejectedReasonLabel": "Reason:",
     "deactivatedStatus": "deactivated",
     "deactivatedNote": "An admin deactivated this listing — it's hidden from the map and search until reactivated. Contact support if you believe this was a mistake.",
-    "deactivatedReasonLabel": "Reason:",
     "addEventButton": "Add event"
   },
   "addBusiness": {

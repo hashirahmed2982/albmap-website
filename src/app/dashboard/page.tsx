@@ -107,27 +107,15 @@ function DashboardContent() {
                         {/* The admin's own reason is now mandatory on their end
                             (see the admin portal's ConfirmModal) — the generic
                             fallback only ever applies to older rejections from
-                            before that requirement existed. */}
-                        {b.rejectionReason ? (
-                          <>
-                            <span className="font-medium text-error">{t("rejectedReasonLabel")}</span>{" "}
-                            {b.rejectionReason}
-                          </>
-                        ) : (
-                          t("rejectedNote")
-                        )}
+                            before that requirement existed. Shown as-is, with
+                            no label prefix — it's the admin's own written
+                            explanation, not a form field that needs naming. */}
+                        {b.rejectionReason || t("rejectedNote")}
                       </p>
                     )}
                     {isDeactivated && (
                       <p className="mt-2 text-xs text-ink-soft">
-                        {b.deactivationReason ? (
-                          <>
-                            <span className="font-medium text-ink">{t("deactivatedReasonLabel")}</span>{" "}
-                            {b.deactivationReason}
-                          </>
-                        ) : (
-                          t("deactivatedNote")
-                        )}
+                        {b.deactivationReason || t("deactivatedNote")}
                       </p>
                     )}
                   </div>
