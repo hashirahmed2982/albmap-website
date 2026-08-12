@@ -30,6 +30,17 @@ export async function getEventById(id: string): Promise<EventItem> {
 }
 
 /**
+ * Every event owned by [ownerId], across every business they own,
+ * regardless of whether it's already finished — backs "My Events" on the
+ * dashboard, same relationship to getEvents as business-api.ts's
+ * getMyBusinesses has to getBusinesses.
+ */
+export async function getMyEvents(ownerId: string): Promise<EventItem[]> {
+  const res = await apiFetch<{ data: EventItem[] }>(`/events?ownerId=${ownerId}`);
+  return res.data;
+}
+
+/**
  * "I'm interested" / RSVP toggle — see the backend's event.routes.js
  * (POST/DELETE /events/:id/interest) and event_interests table. Matches
  * the mobile app's ToggleEventInterestUseCase.
@@ -54,6 +65,19 @@ export interface CreateEventPayload {
 
 export async function createEvent(payload: CreateEventPayload): Promise<EventItem> {
   return apiFetch<EventItem>("/events", { method: "POST", body: payload });
+}
+
+/**
+ * Owner-only edit — the backend rejects this once the event has already
+ * finished (see event.service.js's updateEvent), so a caught ApiError
+ * here can legitimately mean "too late to edit," not just a validation
+ * failure; show its message as-is rather than a generic fallback.
+ */
+export async function updateEvent(
+  id: string,
+  payload: Partial<CreateEventPayload>,
+): Promise<EventItem> {
+  return apiFetch<EventItem>(`/events/${id}`, { method: "PATCH", body: payload });
 }
 
 export async function uploadEventImage(file: File): Promise<string> {

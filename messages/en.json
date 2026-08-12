@@ -210,7 +210,14 @@
     "rejectedNote": "This submission was rejected. Edit and resubmit, or contact support for details.",
     "deactivatedStatus": "deactivated",
     "deactivatedNote": "An admin deactivated this listing — it's hidden from the map and search until reactivated. Contact support if you believe this was a mistake.",
-    "addEventButton": "Add event"
+    "addEventButton": "Add event",
+    "myEventsTitle": "Your Events",
+    "myEventsEmptyText": "You haven't created any events yet.",
+    "myEventsAddFirst": "Add your first event",
+    "eventUpcomingStatus": "upcoming",
+    "eventOngoingStatus": "happening now",
+    "eventPastStatus": "past",
+    "eventHistoryNote": "This event has already finished — kept here as history."
   },
   "addBusiness": {
     "title": "Add Business",
@@ -331,5 +338,14 @@
     "submitFailed": "Failed to create event.",
     "imageUploadFailed": "Failed to upload image.",
     "createdSuccess": "Event created."
+  },
+  "editEvent": {
+    "title": "Edit Event",
+    "saving": "Saving…",
+    "saveChanges": "Save changes",
+    "saved": "Saved.",
+    "saveFailed": "Failed to save changes.",
+    "notFound": "Event not found.",
+    "cannotEditPast": "This event has already finished and can no longer be edited. It's kept on your dashboard as history."
   }
 }
