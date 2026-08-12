@@ -210,7 +210,14 @@
     "rejectedNote": "Kjo dërgesë u refuzua. Modifiko dhe ridërgo, ose kontakto mbështetjen për detaje.",
     "deactivatedStatus": "çaktivizuar",
     "deactivatedNote": "Një administrator e ka çaktivizuar këtë listë — është e fshehur nga harta dhe kërkimi derisa të riaktivizohet. Kontakto mbështetjen nëse mendon se ky ishte gabim.",
-    "addEventButton": "Shto event"
+    "addEventButton": "Shto event",
+    "myEventsTitle": "Eventet e Tua",
+    "myEventsEmptyText": "Ende nuk ke krijuar asnjë event.",
+    "myEventsAddFirst": "Krijo eventin tënd të parë",
+    "eventUpcomingStatus": "së shpejti",
+    "eventOngoingStatus": "duke ndodhur tani",
+    "eventPastStatus": "kaluar",
+    "eventHistoryNote": "Ky event ka përfunduar tashmë — mbahet këtu si histori."
   },
   "addBusiness": {
     "title": "Shto Biznes",
@@ -331,5 +338,14 @@
     "submitFailed": "Krijimi i eventit dështoi.",
     "imageUploadFailed": "Ngarkimi i fotos dështoi.",
     "createdSuccess": "Eventi u krijua."
+  },
+  "editEvent": {
+    "title": "Ndrysho Eventin",
+    "saving": "Duke ruajtur…",
+    "saveChanges": "Ruaj ndryshimet",
+    "saved": "U ruajt.",
+    "saveFailed": "Ruajtja e ndryshimeve dështoi.",
+    "notFound": "Eventi nuk u gjet.",
+    "cannotEditPast": "Ky event ka përfunduar tashmë dhe nuk mund të ndryshohet më. Mbahet në panelin tënd si histori."
   }
 }

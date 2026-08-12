@@ -210,7 +210,14 @@
     "rejectedNote": "Diese Einreichung wurde abgelehnt. Bearbeite und reiche erneut ein, oder kontaktiere den Support für Details.",
     "deactivatedStatus": "deaktiviert",
     "deactivatedNote": "Ein Administrator hat diesen Eintrag deaktiviert — er ist auf der Karte und in der Suche verborgen, bis er reaktiviert wird. Kontaktiere den Support, falls du glaubst, dass dies ein Fehler war.",
-    "addEventButton": "Veranstaltung hinzufügen"
+    "addEventButton": "Veranstaltung hinzufügen",
+    "myEventsTitle": "Deine Veranstaltungen",
+    "myEventsEmptyText": "Du hast noch keine Veranstaltungen erstellt.",
+    "myEventsAddFirst": "Erstelle deine erste Veranstaltung",
+    "eventUpcomingStatus": "bevorstehend",
+    "eventOngoingStatus": "findet gerade statt",
+    "eventPastStatus": "vergangen",
+    "eventHistoryNote": "Diese Veranstaltung ist bereits beendet — sie bleibt hier als Verlauf erhalten."
   },
   "addBusiness": {
     "title": "Unternehmen hinzufügen",
@@ -331,5 +338,14 @@
     "submitFailed": "Veranstaltung konnte nicht erstellt werden.",
     "imageUploadFailed": "Bild konnte nicht hochgeladen werden.",
     "createdSuccess": "Veranstaltung erstellt."
+  },
+  "editEvent": {
+    "title": "Veranstaltung bearbeiten",
+    "saving": "Speichern…",
+    "saveChanges": "Änderungen speichern",
+    "saved": "Gespeichert.",
+    "saveFailed": "Änderungen konnten nicht gespeichert werden.",
+    "notFound": "Veranstaltung nicht gefunden.",
+    "cannotEditPast": "Diese Veranstaltung ist bereits beendet und kann nicht mehr bearbeitet werden. Sie bleibt auf deinem Dashboard als Verlauf erhalten."
   }
 }
