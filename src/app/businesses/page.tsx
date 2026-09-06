@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Search, Map as MapIcon, List, SlidersHorizontal } from "lucide-react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -10,15 +10,16 @@ import { BusinessCard } from "@/components/BusinessCard";
 import { MapViewClient } from "@/components/MapViewClient";
 import { BusinessOverviewCard } from "@/components/BusinessOverviewCard";
 import { getBusinesses, searchBusinesses } from "@/lib/business-api";
-import { getCategories } from "@/lib/category-api";
+import { getCategories, localizedCategoryName } from "@/lib/category-api";
 import { categoryColor } from "@/lib/format";
 import { useGeolocation } from "@/hooks/useGeolocation";
 import { useToast } from "@/lib/toast-context";
-import type { Business, Category } from "@/lib/types";
+import type { Business, Category, Locale } from "@/lib/types";
 
 function BusinessesContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const locale = useLocale() as Locale;
   const t = useTranslations("businesses");
   const { showToast } = useToast();
   const [businesses, setBusinesses] = useState<Business[]>([]);
@@ -136,7 +137,7 @@ function BusinessesContent() {
                 color: selectedCategory === cat.name ? "white" : categoryColor(cat.name),
               }}
             >
-              {cat.name}
+              {localizedCategoryName(cat, locale)}
             </button>
           ))}
 

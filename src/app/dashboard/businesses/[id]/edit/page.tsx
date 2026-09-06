@@ -3,23 +3,24 @@
 import { useState, useEffect, useCallback, useRef, use as usePromise } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Upload } from "lucide-react";
 import { Header } from "@/components/Header";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { OpeningHoursEditor } from "@/components/OpeningHoursEditor";
 import { LocationPickerClient } from "@/components/LocationPickerClient";
-import { getCategories } from "@/lib/category-api";
+import { getCategories, localizedCategoryName } from "@/lib/category-api";
 import { getBusinessById, updateBusiness, uploadLogo } from "@/lib/business-api";
 import { ApiError } from "@/lib/api";
 import { resolveMediaUrl } from "@/lib/format";
 import { useToast } from "@/lib/toast-context";
-import type { Business, Category } from "@/lib/types";
+import type { Business, Category, Locale } from "@/lib/types";
 
 const SENSITIVE_FIELDS = ["name", "category", "streetAddress", "city", "postalCode", "country", "latitude", "longitude"];
 
 function EditBusinessContent({ id }: { id: string }) {
   const router = useRouter();
+  const locale = useLocale() as Locale;
   // Field labels (Business name, City, etc.) are shared with the Add
   // Business form, so reused from that namespace rather than duplicated.
   const tf = useTranslations("addBusiness");
@@ -203,7 +204,7 @@ function EditBusinessContent({ id }: { id: string }) {
           </Field>
           <Field label={tf("category")}>
             <select required value={category} onChange={(e) => setCategory(e.target.value)} className={inputClass}>
-              {categories.map((c) => <option key={c.name} value={c.name}>{c.name}</option>)}
+              {categories.map((c) => <option key={c.name} value={c.name}>{localizedCategoryName(c, locale)}</option>)}
             </select>
           </Field>
           <Field label={tf("streetAddress")}>

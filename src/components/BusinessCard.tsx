@@ -5,9 +5,11 @@ import Image from "next/image";
 import { Star, MapPin, Store } from "lucide-react";
 import type { Business } from "@/lib/types";
 import { categoryColor, resolveMediaUrl } from "@/lib/format";
+import { useCategoryTranslation } from "@/lib/category-translations";
 import { OpenStatusBadge } from "@/components/OpenStatusBadge";
 
 export function BusinessCard({ business }: { business: Business }) {
+  const translateCategory = useCategoryTranslation();
   const logoUrl = resolveMediaUrl(business.logoUrl);
   const accent = categoryColor(business.category);
 
@@ -43,7 +45,7 @@ export function BusinessCard({ business }: { business: Business }) {
             className="inline-block rounded-full px-2.5 py-0.5 text-xs font-medium"
             style={{ backgroundColor: `color-mix(in srgb, ${accent} 14%, white)`, color: accent }}
           >
-            {business.category}
+            {translateCategory(business.category)}
           </span>
           <OpenStatusBadge openingHours={business.openingHours} dense />
         </div>

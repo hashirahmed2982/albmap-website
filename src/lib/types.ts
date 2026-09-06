@@ -84,6 +84,8 @@ export interface EventItem {
 
 export interface Category {
   name: string;
+  nameDe: string | null;
+  nameSq: string | null;
   iconName: string | null;
 }
 
@@ -124,6 +126,24 @@ export interface BusinessAnalytics {
 // be hardcoded here as next-intl messages/literal JSX; now they're
 // admin-editable from the admin portal's Content page and fetched live.
 
+// About Us, Privacy Policy, and Terms & Conditions are real user-facing
+// copy, so the backend now requires (and returns) all 3 of these
+// languages together — there's no single-language shape anymore.
+// social_links stays flat/un-keyed since a URL isn't translated.
+// (Reuses the same 3 codes as src/i18n/locales.ts's SUPPORTED_LOCALES —
+// imported there instead of re-declared here to avoid two Locale types
+// silently drifting apart.)
+export type { Locale } from "@/i18n/locales";
+
+/** One page's content in all 3 languages, as returned by GET /content for
+ * a localized key — see content.service.js's SUPPORTED_LOCALES. */
+export interface LocalizedContent<T> {
+  en: T;
+  de: T;
+  sq: T;
+  updatedAt?: string;
+}
+
 export interface AboutContent {
   tagline: string;
   missionTitle: string;
@@ -149,12 +169,11 @@ export interface LegalSection {
 export interface LegalPageContent {
   title: string;
   sections: LegalSection[];
-  updatedAt?: string;
 }
 
 export interface SiteContent {
-  aboutUs: AboutContent | null;
+  aboutUs: LocalizedContent<AboutContent> | null;
   socialLinks: SocialLinks | null;
-  privacyPolicy: LegalPageContent | null;
-  termsConditions: LegalPageContent | null;
+  privacyPolicy: LocalizedContent<LegalPageContent> | null;
+  termsConditions: LocalizedContent<LegalPageContent> | null;
 }

@@ -3,21 +3,22 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Store, Upload } from "lucide-react";
 import { Header } from "@/components/Header";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { OpeningHoursEditor } from "@/components/OpeningHoursEditor";
 import { LocationPickerClient } from "@/components/LocationPickerClient";
-import { getCategories } from "@/lib/category-api";
+import { getCategories, localizedCategoryName } from "@/lib/category-api";
 import { submitBusiness, uploadLogo, type DuplicateBusinessError } from "@/lib/business-api";
 import { ApiError } from "@/lib/api";
 import { useToast } from "@/lib/toast-context";
 import { useGeolocation } from "@/hooks/useGeolocation";
-import type { Category } from "@/lib/types";
+import type { Category, Locale } from "@/lib/types";
 
 function AddBusinessContent() {
   const router = useRouter();
+  const locale = useLocale() as Locale;
   const t = useTranslations("addBusiness");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -170,7 +171,7 @@ function AddBusinessContent() {
             <select required value={category} onChange={(e) => setCategory(e.target.value)} className={inputClass}>
               <option value="" disabled>{t("categorySelect")}</option>
               {categories.map((c) => (
-                <option key={c.name} value={c.name}>{c.name}</option>
+                <option key={c.name} value={c.name}>{localizedCategoryName(c, locale)}</option>
               ))}
             </select>
           </Field>

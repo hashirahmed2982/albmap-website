@@ -1,10 +1,11 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
+import { useLocale } from "next-intl";
 import { ApiError } from "@/lib/api";
 import { getContent } from "@/lib/content-api";
 import { formatDate } from "@/lib/format";
-import type { LegalPageContent } from "@/lib/types";
+import type { LegalPageContent, Locale, LocalizedContent } from "@/lib/types";
 
 /**
  * Shared client-side content for Privacy Policy and Terms & Conditions —
@@ -23,6 +24,15 @@ import type { LegalPageContent } from "@/lib/types";
  * actually renders/serializes them — only a real request does, which is
  * why this only ever surfaced live, not locally.
  *
+ * GET /content now returns each of these as { en, de, sq, updatedAt } —
+ * the backend requires an admin fill in all 3 languages together (see
+ * content.service.js's SUPPORTED_LOCALES) — so the fetched response is
+ * kept whole in state and the viewer's current locale's title/sections
+ * are picked out at render time (falling back to English if a locale is
+ * somehow missing, matching the mobile app's privacyPolicyFor()/
+ * termsConditionsFor()), avoiding a re-fetch of data already in memory
+ * when the viewer switches language.
+ *
  * Section bodies render as plain text with `whitespace-pre-line` so line
  * breaks are preserved (the admin portal's editor describes bullet lists
  * as separate lines starting with "• ") — no Markdown/HTML, matching the
@@ -35,7 +45,8 @@ export function LegalPageClient({
   field: "privacyPolicy" | "termsConditions";
   fallbackHeading: string;
 }) {
-  const [page, setPage] = useState<LegalPageContent | null>(null);
+  const locale = useLocale() as Locale;
+  const [content, setContent] = useState<LocalizedContent<LegalPageContent> | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -43,8 +54,8 @@ export function LegalPageClient({
     setIsLoading(true);
     setError(null);
     try {
-      const content = await getContent();
-      setPage(content[field]);
+      const fetched = await getContent();
+      setContent(fetched[field]);
     } catch (err) {
       setError(err instanceof ApiError ? err.message : "Couldn't load this page.");
     } finally {
@@ -66,6 +77,8 @@ export function LegalPageClient({
     );
   }
 
+  const page = content ? content[locale] ?? content.en : null;
+
   if (error || !page) {
     return (
       <div className="mt-12 flex flex-col items-center gap-3 rounded-2xl border border-dashed border-line py-16 text-ink-soft">
@@ -82,8 +95,8 @@ export function LegalPageClient({
 
   return (
     <>
-      {page.updatedAt && (
-        <p className="mt-1 text-sm text-ink-soft">Last updated: {formatDate(page.updatedAt)}</p>
+      {content?.updatedAt && (
+        <p className="mt-1 text-sm text-ink-soft">Last updated: {formatDate(content.updatedAt)}</p>
       )}
       <div className="mt-8 space-y-8 text-sm leading-relaxed text-ink-soft">
         {page.sections.map((section, i) => (

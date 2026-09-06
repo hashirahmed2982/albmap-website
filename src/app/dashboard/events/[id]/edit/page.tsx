@@ -3,16 +3,16 @@
 import { useState, useEffect, useCallback, useRef, use as usePromise } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Upload, History } from "lucide-react";
 import { Header } from "@/components/Header";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
-import { getCategories } from "@/lib/category-api";
+import { getCategories, localizedCategoryName } from "@/lib/category-api";
 import { getEventById, updateEvent, uploadEventImage } from "@/lib/event-api";
 import { ApiError } from "@/lib/api";
 import { resolveMediaUrl, isEventFinished } from "@/lib/format";
 import { useToast } from "@/lib/toast-context";
-import type { EventItem, Category } from "@/lib/types";
+import type { EventItem, Category, Locale } from "@/lib/types";
 
 /** ISO string -> the value <input type="datetime-local"> expects
  * ("YYYY-MM-DDTHH:mm", local time, no seconds/zone). */
@@ -24,6 +24,7 @@ function toDatetimeLocalValue(iso: string): string {
 
 function EditEventContent({ id }: { id: string }) {
   const router = useRouter();
+  const locale = useLocale() as Locale;
   // Field labels (Event name, Category, ...) are shared with the Add
   // Event form, same reasoning as Edit Business reusing addBusiness's.
   const tf = useTranslations("addEvent");
@@ -189,7 +190,7 @@ function EditEventContent({ id }: { id: string }) {
             <select value={category} onChange={(e) => setCategory(e.target.value)} className={inputClass}>
               <option value="">{tf("categorySelect")}</option>
               {categories.map((c) => (
-                <option key={c.name} value={c.name}>{c.name}</option>
+                <option key={c.name} value={c.name}>{localizedCategoryName(c, locale)}</option>
               ))}
             </select>
           </Field>

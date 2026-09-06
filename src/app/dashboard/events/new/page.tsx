@@ -4,20 +4,21 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { CalendarDays, Upload, Store } from "lucide-react";
 import { Header } from "@/components/Header";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { useAuth } from "@/lib/auth-context";
 import { useToast } from "@/lib/toast-context";
-import { getCategories } from "@/lib/category-api";
+import { getCategories, localizedCategoryName } from "@/lib/category-api";
 import { getMyBusinesses } from "@/lib/business-api";
 import { createEvent, uploadEventImage } from "@/lib/event-api";
 import { ApiError } from "@/lib/api";
-import type { Business, Category } from "@/lib/types";
+import type { Business, Category, Locale } from "@/lib/types";
 
 function AddEventContent() {
   const router = useRouter();
+  const locale = useLocale() as Locale;
   const { user } = useAuth();
   const { showToast } = useToast();
   const t = useTranslations("addEvent");
@@ -179,7 +180,7 @@ function AddEventContent() {
               <select value={category} onChange={(e) => setCategory(e.target.value)} className={inputClass}>
                 <option value="">{t("categorySelect")}</option>
                 {categories.map((c) => (
-                  <option key={c.name} value={c.name}>{c.name}</option>
+                  <option key={c.name} value={c.name}>{localizedCategoryName(c, locale)}</option>
                 ))}
               </select>
             </Field>

@@ -1,10 +1,11 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
+import { useLocale } from "next-intl";
 import { Target, Eye } from "lucide-react";
 import { ApiError } from "@/lib/api";
 import { getContent } from "@/lib/content-api";
-import type { AboutContent } from "@/lib/types";
+import type { AboutContent, Locale, LocalizedContent } from "@/lib/types";
 
 /**
  * Split out from page.tsx so that file can stay a server component (it
@@ -12,9 +13,18 @@ import type { AboutContent } from "@/lib/types";
  * this part does the actual fetch — tagline/mission/vision are
  * admin-editable content from GET /content, not next-intl strings
  * anymore.
+ *
+ * GET /content now returns about_us as { en, de, sq } — the backend
+ * requires an admin fill in all 3 together (see content.service.js's
+ * SUPPORTED_LOCALES). The fetched response already carries every
+ * language, so it's kept as-is in state and the viewer's current locale
+ * is picked out at render time (falling back to English if a locale is
+ * somehow missing, matching the mobile app's aboutUsFor()) — that way
+ * switching language doesn't need a re-fetch of data already in memory.
  */
 export function AboutClient() {
-  const [about, setAbout] = useState<AboutContent | null>(null);
+  const locale = useLocale() as Locale;
+  const [aboutUs, setAboutUs] = useState<LocalizedContent<AboutContent> | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -23,7 +33,7 @@ export function AboutClient() {
     setError(null);
     try {
       const content = await getContent();
-      setAbout(content.aboutUs);
+      setAboutUs(content.aboutUs);
     } catch (err) {
       setError(err instanceof ApiError ? err.message : "Couldn't load this page.");
     } finally {
@@ -44,6 +54,8 @@ export function AboutClient() {
       </div>
     );
   }
+
+  const about = aboutUs ? aboutUs[locale] ?? aboutUs.en : null;
 
   if (error || !about) {
     return (
