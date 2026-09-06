@@ -84,31 +84,3 @@ body {
   0%, 100% { transform: translateY(0) rotate(0deg); }
   50% { transform: translateY(-14px) rotate(-4deg); }
 }
-
-/*
-  Leaflet's own CSS assigns its internal panes z-index values up to 700
-  (tilePane 200, overlayPane 400, markerPane 600, popupPane 700) — these
-  are meant to be scoped inside .leaflet-container, but without an
-  explicit cap here they were winning the stacking comparison against
-  the site's own UI: the sticky Header (z-40) was getting visually
-  buried under the map on scroll, and the marker overview card sitting
-  on top of the map (z-[1000], but rendered as a *sibling* of
-  .leaflet-container rather than a Leaflet-internal element) was
-  inconsistently hidden behind it. Explicitly capping every Leaflet
-  layer here, well below the site's own z-index scale, fixes both at
-  once rather than needing two separate patches.
-*/
-.leaflet-container {
-  z-index: 0;
-}
-.leaflet-pane,
-.leaflet-top,
-.leaflet-bottom {
-  z-index: 10 !important;
-}
-.leaflet-popup-pane {
-  z-index: 15 !important;
-}
-.leaflet-control-container {
-  z-index: 20 !important;
-}
