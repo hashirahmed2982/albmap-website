@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { MapPin, Facebook, Instagram, Twitter, Youtube, Linkedin, Music2 } from "lucide-react";
 import { getContent } from "@/lib/content-api";
+import { ANDROID_PLAY_STORE_URL, IOS_APP_STORE_URL } from "@/lib/app-links";
+import { QrCode } from "@/components/QrCode";
 import type { SocialLinks } from "@/lib/types";
 
 const SOCIAL_ICONS: { key: keyof SocialLinks; Icon: typeof Facebook; label: string }[] = [
@@ -62,6 +64,23 @@ export function Footer() {
               ))}
             </div>
           )}
+        </div>
+
+        {/* Two QR codes, one per store — the app isn't in either store
+            yet (see src/lib/app-links.ts), but the codes/links are wired
+            up ready to go the moment it ships. */}
+        <div className="mt-8 flex flex-col items-center gap-4 border-t border-line pt-8 sm:flex-row sm:justify-center">
+          <span className="text-sm font-medium text-ink">{t("getTheApp")}</span>
+          <div className="flex items-center gap-6">
+            <a href={ANDROID_PLAY_STORE_URL} target="_blank" rel="noopener noreferrer" className="flex flex-col items-center gap-1.5">
+              <QrCode value={ANDROID_PLAY_STORE_URL} size={72} />
+              <span className="text-xs text-ink-soft">{t("scanAndroid")}</span>
+            </a>
+            <a href={IOS_APP_STORE_URL} target="_blank" rel="noopener noreferrer" className="flex flex-col items-center gap-1.5">
+              <QrCode value={IOS_APP_STORE_URL} size={72} />
+              <span className="text-xs text-ink-soft">{t("scanIos")}</span>
+            </a>
+          </div>
         </div>
 
         <p className="mt-8 text-center text-xs text-ink-soft sm:text-left">

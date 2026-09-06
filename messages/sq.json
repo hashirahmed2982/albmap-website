@@ -26,7 +26,16 @@
     "contactUs": "Na Kontaktoni",
     "privacyPolicy": "Politika e Privatësisë",
     "termsConditions": "Kushtet & Termat",
-    "copyright": "Zbulo bizneset dhe eventet lokale rreth teje."
+    "copyright": "Zbulo bizneset dhe eventet lokale rreth teje.",
+    "getTheApp": "Shkarko aplikacionin",
+    "scanAndroid": "Skano për Android",
+    "scanIos": "Skano për iPhone"
+  },
+  "appDownload": {
+    "title": "Shkarko aplikacionin AlbMap",
+    "subtitle": "Skano një kod më poshtë, ose vazhdo në faqen e internetit.",
+    "continueToWebsite": "Vazhdo në faqen e internetit",
+    "openInStore": "Hap në {store}"
   },
   "language": {
     "label": "Gjuha",
