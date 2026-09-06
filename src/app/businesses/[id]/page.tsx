@@ -17,6 +17,7 @@ import { recordAnalyticsEvent } from "@/lib/analytics-api";
 import { ApiError } from "@/lib/api";
 import { useToast } from "@/lib/toast-context";
 import { categoryColor, collapseOpeningHours, isEventFinished, resolveMediaUrl, timeAgo } from "@/lib/format";
+import { useCategoryTranslation } from "@/lib/category-translations";
 import type { Business, EventItem, Review } from "@/lib/types";
 
 export default function BusinessDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -24,6 +25,7 @@ export default function BusinessDetailPage({ params }: { params: Promise<{ id: s
   const { user } = useAuth();
   const { showToast } = useToast();
   const t = useTranslations("businessDetail");
+  const translateCategory = useCategoryTranslation();
 
   const [business, setBusiness] = useState<Business | null>(null);
   const [events, setEvents] = useState<EventItem[]>([]);
@@ -191,7 +193,7 @@ export default function BusinessDetailPage({ params }: { params: Promise<{ id: s
                   className="rounded-full px-3 py-1 text-xs font-semibold"
                   style={{ backgroundColor: `color-mix(in srgb, ${accent} 14%, white)`, color: accent }}
                 >
-                  {business.category}
+                  {translateCategory(business.category)}
                 </span>
                 {business.rating != null && (
                   <span className="flex items-center gap-1 text-sm font-medium text-ink">

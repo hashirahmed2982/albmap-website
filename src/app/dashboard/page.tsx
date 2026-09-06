@@ -10,6 +10,7 @@ import { useAuth } from "@/lib/auth-context";
 import { getMyBusinesses } from "@/lib/business-api";
 import { getMyEvents } from "@/lib/event-api";
 import { categoryColor, formatDateTime, isEventFinished } from "@/lib/format";
+import { useCategoryTranslation } from "@/lib/category-translations";
 import type { Business, BusinessStatus, EventItem } from "@/lib/types";
 
 const STATUS_STYLES: Record<BusinessStatus, string> = {
@@ -20,6 +21,7 @@ const STATUS_STYLES: Record<BusinessStatus, string> = {
 
 function DashboardContent() {
   const t = useTranslations("dashboard");
+  const translateCategory = useCategoryTranslation();
   const { user } = useAuth();
   const [businesses, setBusinesses] = useState<Business[]>([]);
   const [events, setEvents] = useState<EventItem[]>([]);
@@ -114,7 +116,7 @@ function DashboardContent() {
                         {isDeactivated ? t("deactivatedStatus") : STATUS_LABELS[b.status]}
                       </span>
                     </div>
-                    <p className="mt-1 text-sm" style={{ color: categoryColor(b.category) }}>{b.category}</p>
+                    <p className="mt-1 text-sm" style={{ color: categoryColor(b.category) }}>{translateCategory(b.category)}</p>
                     <p className="mt-1 text-xs text-ink-soft">{b.formattedAddress}</p>
                     {b.status === "pending" && (
                       <p className="mt-2 text-xs text-ink-soft">{t("pendingNote")}</p>

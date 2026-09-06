@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Star, Store, ArrowRight, X } from "lucide-react";
 import { categoryColor, resolveMediaUrl } from "@/lib/format";
+import { useCategoryTranslation } from "@/lib/category-translations";
 import type { Business } from "@/lib/types";
 
 /**
@@ -20,6 +21,7 @@ export function BusinessOverviewCard({
   business: Business;
   onClose: () => void;
 }) {
+  const translateCategory = useCategoryTranslation();
   const accent = categoryColor(business.category);
   const logoUrl = resolveMediaUrl(business.logoUrl);
 
@@ -41,7 +43,7 @@ export function BusinessOverviewCard({
 
         <div className="min-w-0 flex-1">
           <h3 className="font-display text-sm font-semibold text-ink line-clamp-1">{business.name}</h3>
-          <p className="mt-0.5 text-xs text-ink-soft line-clamp-1">{business.category}</p>
+          <p className="mt-0.5 text-xs text-ink-soft line-clamp-1">{translateCategory(business.category)}</p>
           <div className="mt-1 flex items-center gap-2 text-xs text-ink-soft">
             {business.rating != null && (
               <span className="flex items-center gap-0.5">

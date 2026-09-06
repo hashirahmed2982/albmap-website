@@ -12,6 +12,7 @@ import { addEventFavorite, removeEventFavorite, getMyEventFavorites } from "@/li
 import { ApiError } from "@/lib/api";
 import { useToast } from "@/lib/toast-context";
 import { categoryColor, formatDateTime, resolveMediaUrl } from "@/lib/format";
+import { useCategoryTranslation } from "@/lib/category-translations";
 import type { EventItem } from "@/lib/types";
 
 export default function EventDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -19,6 +20,7 @@ export default function EventDetailPage({ params }: { params: Promise<{ id: stri
   const t = useTranslations("eventDetail");
   const { user } = useAuth();
   const { showToast } = useToast();
+  const translateCategory = useCategoryTranslation();
   const [event, setEvent] = useState<EventItem | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isFavorite, setIsFavorite] = useState(false);
@@ -152,7 +154,7 @@ export default function EventDetailPage({ params }: { params: Promise<{ id: stri
             className="mt-3 inline-block rounded-full px-3 py-1 text-xs font-semibold"
             style={{ backgroundColor: `color-mix(in srgb, ${accent} 14%, white)`, color: accent }}
           >
-            {event.category}
+            {translateCategory(event.category)}
           </span>
 
           <div className="mt-6 flex items-center gap-3 rounded-2xl bg-paper p-5">

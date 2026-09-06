@@ -4,16 +4,16 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Search, MapPin, CalendarDays, ArrowRight } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { BusinessCard } from "@/components/BusinessCard";
 import { EventCard } from "@/components/EventCard";
 import { getBusinesses } from "@/lib/business-api";
 import { getEvents } from "@/lib/event-api";
-import { getCategories } from "@/lib/category-api";
+import { getCategories, localizedCategoryName } from "@/lib/category-api";
 import { categoryColor } from "@/lib/format";
-import type { Business, EventItem, Category } from "@/lib/types";
+import type { Business, EventItem, Category, Locale } from "@/lib/types";
 
 const PIN_CATEGORIES = [
   { color: "var(--color-cat-restaurants)", top: "8%", left: "6%", size: 26 },
@@ -25,6 +25,7 @@ const PIN_CATEGORIES = [
 
 export default function HomePage() {
   const router = useRouter();
+  const locale = useLocale() as Locale;
   const t = useTranslations("home");
   const [query, setQuery] = useState("");
   const [businesses, setBusinesses] = useState<Business[]>([]);
@@ -109,7 +110,7 @@ export default function HomePage() {
                 onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = categoryColor(cat.name))}
                 onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "")}
               >
-                {cat.name}
+                {localizedCategoryName(cat, locale)}
               </Link>
             ))}
           </div>
