@@ -35,7 +35,8 @@
     "title": "Shkarko aplikacionin AlbMap",
     "subtitle": "Skano një kod më poshtë, ose vazhdo në faqen e internetit.",
     "continueToWebsite": "Vazhdo në faqen e internetit",
-    "openInStore": "Hap në {store}"
+    "openInStore": "Hap në {store}",
+    "redirectingToStore": "Po të çojmë te {store} për të shkarkuar aplikacionin…"
   },
   "language": {
     "label": "Gjuha",

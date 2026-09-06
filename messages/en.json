@@ -35,7 +35,8 @@
     "title": "Get the AlbMap app",
     "subtitle": "Scan a code below, or continue to the website instead.",
     "continueToWebsite": "Continue to the website",
-    "openInStore": "Open in {store}"
+    "openInStore": "Open in {store}",
+    "redirectingToStore": "Taking you to {store} to download the app…"
   },
   "language": {
     "label": "Language",

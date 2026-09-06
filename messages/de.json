@@ -35,7 +35,8 @@
     "title": "AlbMap-App herunterladen",
     "subtitle": "Scanne einen Code unten oder besuche stattdessen die Website.",
     "continueToWebsite": "Weiter zur Website",
-    "openInStore": "In {store} öffnen"
+    "openInStore": "In {store} öffnen",
+    "redirectingToStore": "Du wirst zu {store} weitergeleitet, um die App herunterzuladen …"
   },
   "language": {
     "label": "Sprache",
