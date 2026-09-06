@@ -26,7 +26,16 @@
     "contactUs": "Kontakt",
     "privacyPolicy": "Datenschutzerklärung",
     "termsConditions": "Allgemeine Geschäftsbedingungen",
-    "copyright": "Entdecke lokale Unternehmen & Veranstaltungen in deiner Nähe."
+    "copyright": "Entdecke lokale Unternehmen & Veranstaltungen in deiner Nähe.",
+    "getTheApp": "App herunterladen",
+    "scanAndroid": "Scannen für Android",
+    "scanIos": "Scannen für iPhone"
+  },
+  "appDownload": {
+    "title": "AlbMap-App herunterladen",
+    "subtitle": "Scanne einen Code unten oder besuche stattdessen die Website.",
+    "continueToWebsite": "Weiter zur Website",
+    "openInStore": "In {store} öffnen"
   },
   "language": {
     "label": "Sprache",
