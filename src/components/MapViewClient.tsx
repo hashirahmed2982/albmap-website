@@ -2,9 +2,9 @@
 
 import dynamic from "next/dynamic";
 
-// Leaflet touches `window`/`document` at import time, which breaks
-// Next.js's server-side render pass entirely if imported normally —
-// ssr: false defers loading this component until the browser.
+// @react-google-maps/api's loader touches `window` at import/mount time,
+// which breaks Next.js's server-side render pass entirely if imported
+// normally — ssr: false defers loading this component until the browser.
 export const MapViewClient = dynamic(() => import("./MapView").then((m) => m.MapView), {
   ssr: false,
   loading: () => (

@@ -1,79 +1,55 @@
 "use client";
 
-import { MapContainer, TileLayer, Marker, useMap } from "react-leaflet";
-import { useEffect } from "react";
+import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api";
+import { useCallback, useEffect, useRef } from "react";
 import { LocateFixed } from "lucide-react";
-import "leaflet/dist/leaflet.css";
-import L from "leaflet";
 import type { Business } from "@/lib/types";
 import { categoryColor, safeLatLng } from "@/lib/format";
+import { DARK_MAP_STYLE } from "@/lib/map-style";
+import { GOOGLE_MAPS_API_KEY } from "@/lib/google-maps";
 
-function pinIcon(color: string): L.DivIcon {
-  return L.divIcon({
-    html: `<svg width="30" height="40" viewBox="0 0 30 40" xmlns="http://www.w3.org/2000/svg">
-      <path d="M15 0C6.7 0 0 6.7 0 15c0 11.25 15 25 15 25s15-13.75 15-25C30 6.7 23.3 0 15 0z" fill="${color}"/>
-      <circle cx="15" cy="15" r="6" fill="white"/>
-    </svg>`,
-    className: "",
-    iconSize: [30, 40],
-    iconAnchor: [15, 40],
-  });
+/** Inline colored-teardrop-pin SVG, data-URI encoded — same shape/markup
+ * this used as a Leaflet divIcon before, now a plain image `icon` (Google
+ * Maps markers take an image, not arbitrary HTML). */
+function pinIcon(color: string): google.maps.Icon {
+  const svg = `<svg width="30" height="40" viewBox="0 0 30 40" xmlns="http://www.w3.org/2000/svg">
+    <path d="M15 0C6.7 0 0 6.7 0 15c0 11.25 15 25 15 25s15-13.75 15-25C30 6.7 23.3 0 15 0z" fill="${color}"/>
+    <circle cx="15" cy="15" r="6" fill="white"/>
+  </svg>`;
+  return {
+    url: `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`,
+    scaledSize: new google.maps.Size(30, 40),
+    // Anchored at the pin's visual tip (bottom-center), not the image's
+    // top-left corner — same convention as the previous Leaflet iconAnchor.
+    anchor: new google.maps.Point(15, 40),
+  };
 }
 
-function userLocationIcon(): L.DivIcon {
-  return L.divIcon({
-    html: `<div style="width:16px;height:16px;border-radius:50%;background:#3b82c4;border:3px solid white;box-shadow:0 1px 4px rgba(0,0,0,0.4);"></div>`,
-    className: "",
-    iconSize: [16, 16],
-    iconAnchor: [8, 8],
-  });
+function userLocationIcon(): google.maps.Icon {
+  const svg = `<svg width="16" height="16" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="8" cy="8" r="6.5" fill="#3b82c4" stroke="white" stroke-width="3"/>
+  </svg>`;
+  return {
+    url: `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`,
+    scaledSize: new google.maps.Size(16, 16),
+    anchor: new google.maps.Point(8, 8),
+  };
 }
 
 export const TIRANA_CENTER: [number, number] = [41.3275, 19.8187];
 
-function RecenterOnChange({ center, zoom }: { center: [number, number]; zoom: number }) {
-  const map = useMap();
-  useEffect(() => {
-    map.setView(center, zoom);
-  }, [center, zoom, map]);
-  return null;
-}
+const MAP_CONTAINER_STYLE = { width: "100%", height: "100%", borderRadius: "1rem" };
 
-function RecenterButton({
-  target,
-  onUnavailable,
-}: {
-  target: [number, number] | null;
-  onUnavailable?: (reason: "insecure" | "denied") => void;
-}) {
-  const map = useMap();
+const MAP_OPTIONS: google.maps.MapOptions = {
+  styles: DARK_MAP_STYLE,
+  disableDefaultUI: true,
+  zoomControl: true,
+  clickableIcons: false,
+  gestureHandling: "greedy",
+};
 
-  function handleClick() {
-    if (target) {
-      map.setView(target, 15);
-      return;
-    }
-    if (!("geolocation" in navigator)) {
-      onUnavailable?.("denied");
-      return;
-    }
-    navigator.geolocation.getCurrentPosition(
-      (pos) => map.setView([pos.coords.latitude, pos.coords.longitude], 15),
-      () => onUnavailable?.(window.isSecureContext ? "denied" : "insecure"),
-      { enableHighAccuracy: false, timeout: 8000 },
-    );
-  }
-
-  return (
-    <button
-      type="button"
-      onClick={handleClick}
-      className="absolute bottom-4 right-4 z-[1000] flex h-11 w-11 items-center justify-center rounded-full bg-surface text-primary shadow-lift transition-transform hover:scale-105"
-      aria-label="Recenter on my location"
-    >
-      <LocateFixed size={20} />
-    </button>
-  );
+function toLatLngLiteral([lat, lng]: [number, number]): google.maps.LatLngLiteral {
+  return { lat, lng };
 }
 
 export function MapView({
@@ -104,46 +80,101 @@ export function MapView({
    * renders and makes a fresh geolocation request when clicked, rather
    * than disappearing. */
   recenterTarget?: [number, number] | null;
-  /** Called with the tapped business instead of showing Leaflet's own
-   * cramped native popup — the caller renders a richer overview card
-   * (see BusinessOverviewCard) matching the mobile app's marker bottom
-   * sheet, which a tiny Leaflet Popup bubble can't reasonably reproduce. */
+  /** Called with the tapped business instead of showing a cramped native
+   * InfoWindow bubble — the caller renders a richer overview card (see
+   * BusinessOverviewCard) matching the mobile app's marker bottom sheet,
+   * which a tiny popup can't reasonably reproduce. */
   onMarkerClick?: (business: Business) => void;
   /** Called if the recenter button's fresh geolocation attempt also
    * fails, so the caller can explain why (e.g. via a toast) instead of
    * the button just doing nothing a second time. */
   onLocationUnavailable?: (reason: "insecure" | "denied") => void;
 }) {
+  const { isLoaded } = useJsApiLoader({
+    id: "albmap-google-maps",
+    googleMapsApiKey: GOOGLE_MAPS_API_KEY,
+  });
+  const mapRef = useRef<google.maps.Map | null>(null);
   const effectiveCenter = center || TIRANA_CENTER;
 
+  const onLoad = useCallback((map: google.maps.Map) => {
+    mapRef.current = map;
+  }, []);
+  const onUnmount = useCallback(() => {
+    mapRef.current = null;
+  }, []);
+
+  // Re-centers whenever `center` actually changes (a search result
+  // picked, etc.) — GoogleMap's center/zoom props only set the *initial*
+  // view (see onLoad above); this is the one place recentering after the
+  // first render happens, same role the previous Leaflet
+  // RecenterOnChange component played.
+  useEffect(() => {
+    mapRef.current?.panTo(toLatLngLiteral(effectiveCenter));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [effectiveCenter[0], effectiveCenter[1]]);
+
+  function handleRecenterClick() {
+    if (recenterTarget) {
+      mapRef.current?.panTo(toLatLngLiteral(recenterTarget));
+      mapRef.current?.setZoom(15);
+      return;
+    }
+    if (!("geolocation" in navigator)) {
+      onLocationUnavailable?.("denied");
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        mapRef.current?.panTo({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+        mapRef.current?.setZoom(15);
+      },
+      () => onLocationUnavailable?.(window.isSecureContext ? "denied" : "insecure"),
+      { enableHighAccuracy: false, timeout: 8000 },
+    );
+  }
+
+  if (!isLoaded) {
+    return (
+      <div className="flex h-full w-full items-center justify-center rounded-2xl bg-paper-warm">
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-line border-t-primary" />
+      </div>
+    );
+  }
+
   return (
-    <MapContainer
-      center={effectiveCenter}
-      zoom={13}
-      scrollWheelZoom
-      style={{ height: "100%", width: "100%", borderRadius: "1rem" }}
-    >
-      <RecenterOnChange center={effectiveCenter} zoom={13} />
-      <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-      />
-      {userPosition && (
-        <Marker position={userPosition} icon={userLocationIcon()} />
-      )}
-      {businesses.map((b) => {
-        const position = safeLatLng(b.latitude, b.longitude);
-        if (!position) return null; // skip rather than render at a broken/NaN position
-        return (
-          <Marker
-            key={b.id}
-            position={position}
-            icon={pinIcon(categoryColor(b.category))}
-            eventHandlers={{ click: () => onMarkerClick?.(b) }}
-          />
-        );
-      })}
-      <RecenterButton target={recenterTarget ?? null} onUnavailable={onLocationUnavailable} />
-    </MapContainer>
+    <div className="relative h-full w-full">
+      <GoogleMap
+        mapContainerStyle={MAP_CONTAINER_STYLE}
+        center={toLatLngLiteral(effectiveCenter)}
+        zoom={13}
+        onLoad={onLoad}
+        onUnmount={onUnmount}
+        options={MAP_OPTIONS}
+      >
+        {userPosition && <Marker position={toLatLngLiteral(userPosition)} icon={userLocationIcon()} />}
+        {businesses.map((b) => {
+          const position = safeLatLng(b.latitude, b.longitude);
+          if (!position) return null; // skip rather than render at a broken/NaN position
+          return (
+            <Marker
+              key={b.id}
+              position={toLatLngLiteral(position)}
+              icon={pinIcon(categoryColor(b.category))}
+              onClick={() => onMarkerClick?.(b)}
+            />
+          );
+        })}
+      </GoogleMap>
+
+      <button
+        type="button"
+        onClick={handleRecenterClick}
+        className="absolute bottom-4 right-4 z-[1000] flex h-11 w-11 items-center justify-center rounded-full bg-surface text-primary shadow-lift transition-transform hover:scale-105"
+        aria-label="Recenter on my location"
+      >
+        <LocateFixed size={20} />
+      </button>
+    </div>
   );
 }
