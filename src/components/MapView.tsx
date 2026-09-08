@@ -4,24 +4,22 @@ import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api";
 import { useCallback, useEffect, useRef } from "react";
 import { LocateFixed } from "lucide-react";
 import type { Business } from "@/lib/types";
-import { categoryColor, safeLatLng } from "@/lib/format";
+import { safeLatLng } from "@/lib/format";
 import { DARK_MAP_STYLE } from "@/lib/map-style";
 import { GOOGLE_MAPS_API_KEY } from "@/lib/google-maps";
 
-/** Inline colored-teardrop-pin SVG, data-URI encoded — same shape/markup
- * this used as a Leaflet divIcon before, now a plain image `icon` (Google
- * Maps markers take an image, not arbitrary HTML). */
-function pinIcon(color: string): google.maps.Icon {
-  const svg = `<svg width="30" height="40" viewBox="0 0 30 40" xmlns="http://www.w3.org/2000/svg">
-    <path d="M15 0C6.7 0 0 6.7 0 15c0 11.25 15 25 15 25s15-13.75 15-25C30 6.7 23.3 0 15 0z" fill="${color}"/>
-    <circle cx="15" cy="15" r="6" fill="white"/>
-  </svg>`;
+/** Every business gets the same marker — the exact asset (public/
+ * marker-business.png) the Flutter app uses for its Discover Map, not a
+ * per-category-colored pin the app doesn't have an equivalent of. Google
+ * Maps markers take an image, not arbitrary HTML/SVG, so this is a plain
+ * `icon`, but it's the same asset either way. */
+function pinIcon(): google.maps.Icon {
   return {
-    url: `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`,
-    scaledSize: new google.maps.Size(30, 40),
-    // Anchored at the pin's visual tip (bottom-center), not the image's
-    // top-left corner — same convention as the previous Leaflet iconAnchor.
-    anchor: new google.maps.Point(15, 40),
+    url: "/marker-business.png",
+    scaledSize: new google.maps.Size(40, 40),
+    // The asset's teardrop tip sits at the very bottom-center of its
+    // square crop, same as the mobile app's default (0.5, 1.0) anchor.
+    anchor: new google.maps.Point(20, 40),
   };
 }
 
@@ -160,7 +158,7 @@ export function MapView({
             <Marker
               key={b.id}
               position={toLatLngLiteral(position)}
-              icon={pinIcon(categoryColor(b.category))}
+              icon={pinIcon()}
               onClick={() => onMarkerClick?.(b)}
             />
           );

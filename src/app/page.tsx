@@ -12,7 +12,6 @@ import { EventCard } from "@/components/EventCard";
 import { getBusinesses } from "@/lib/business-api";
 import { getEvents } from "@/lib/event-api";
 import { getCategories, localizedCategoryName } from "@/lib/category-api";
-import { categoryColor } from "@/lib/format";
 import type { Business, EventItem, Category, Locale } from "@/lib/types";
 
 const PIN_CATEGORIES = [
@@ -105,10 +104,7 @@ export default function HomePage() {
               <Link
                 key={cat.name}
                 href={`/businesses?category=${encodeURIComponent(cat.name)}`}
-                className="border border-line bg-surface px-5 py-2.5 text-sm font-medium text-ink transition-colors hover:text-white"
-                style={{ borderColor: categoryColor(cat.name) }}
-                onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = categoryColor(cat.name))}
-                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "")}
+                className="border border-line bg-surface px-5 py-2.5 text-sm font-medium text-ink transition-colors hover:border-primary hover:bg-primary hover:text-white"
               >
                 {localizedCategoryName(cat, locale)}
               </Link>

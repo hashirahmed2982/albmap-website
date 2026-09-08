@@ -6,7 +6,7 @@ import { DARK_MAP_STYLE } from "@/lib/map-style";
 import { GOOGLE_MAPS_API_KEY } from "@/lib/google-maps";
 
 const PIN_SVG = `<svg width="30" height="40" viewBox="0 0 30 40" xmlns="http://www.w3.org/2000/svg">
-  <path d="M15 0C6.7 0 0 6.7 0 15c0 11.25 15 25 15 25s15-13.75 15-25C30 6.7 23.3 0 15 0z" fill="#E31320"/>
+  <path d="M15 0C6.7 0 0 6.7 0 15c0 11.25 15 25 15 25s15-13.75 15-25C30 6.7 23.3 0 15 0z" fill="#D73337"/>
   <circle cx="15" cy="15" r="6" fill="white"/>
 </svg>`;
 
