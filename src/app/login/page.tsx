@@ -11,6 +11,7 @@ import { ApiError } from "@/lib/api";
 import { useToast } from "@/lib/toast-context";
 import { GoogleSignInButton } from "@/components/GoogleSignInButton";
 import { FacebookSignInButton } from "@/components/FacebookSignInButton";
+import { AppleSignInButton } from "@/components/AppleSignInButton";
 
 const PIN_CATEGORIES = [
   { color: "var(--color-cat-restaurants)", top: "12%", left: "18%", delay: 0 },
@@ -23,7 +24,7 @@ const PIN_CATEGORIES = [
 export default function LoginPage() {
   const router = useRouter();
   const t = useTranslations("auth");
-  const { login, requestSignup, verifySignupOtp, loginWithGoogle, loginWithFacebook } = useAuth();
+  const { login, requestSignup, verifySignupOtp, loginWithGoogle, loginWithFacebook, loginWithApple } = useAuth();
   const { showToast } = useToast();
 
   // "verify-otp" only ever follows "signup" — requestSignup succeeded
@@ -111,6 +112,21 @@ export default function LoginPage() {
       }
     },
     [loginWithFacebook, router, t, showToast],
+  );
+
+  const handleAppleToken = useCallback(
+    async (identityToken: string, name?: { firstName?: string; lastName?: string }) => {
+      setError(null);
+      try {
+        await loginWithApple(identityToken, name);
+        router.push("/");
+      } catch (err) {
+        const message = err instanceof ApiError ? err.message : t("appleSignInFailed");
+        setError(message);
+        showToast(message, "error");
+      }
+    },
+    [loginWithApple, router, t, showToast],
   );
 
   return (
@@ -285,6 +301,7 @@ export default function LoginPage() {
               <div className="space-y-3">
                 <GoogleSignInButton onIdToken={handleGoogleToken} onError={setError} />
                 <FacebookSignInButton onAccessToken={handleFacebookToken} onError={setError} />
+                <AppleSignInButton onIdentityToken={handleAppleToken} onError={setError} />
               </div>
 
               <button

@@ -65,6 +65,26 @@ export async function loginWithFacebook(accessToken: string): Promise<User> {
   return res.user;
 }
 
+/**
+ * identityToken comes from Apple JS's web sign-in flow (see
+ * AppleSignInButton) — sent to the exact same backend endpoint the
+ * mobile app uses. firstName/lastName are only ever present on the
+ * user's very first authorization (Apple never sends the name again
+ * after that, and never inside the token itself).
+ */
+export async function loginWithApple(
+  identityToken: string,
+  name?: { firstName?: string; lastName?: string },
+): Promise<User> {
+  const res = await apiFetch<AuthResponse>("/auth/apple", {
+    method: "POST",
+    body: { identityToken, firstName: name?.firstName, lastName: name?.lastName },
+    skipAuth: true,
+  });
+  storeTokens(res.accessToken, res.refreshToken);
+  return res.user;
+}
+
 export async function getCurrentUser(): Promise<User> {
   return apiFetch<User>("/auth/me");
 }

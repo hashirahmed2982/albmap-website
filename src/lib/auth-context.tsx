@@ -15,6 +15,7 @@ interface AuthContextValue {
   verifySignupOtp: (email: string, otp: string) => Promise<void>;
   loginWithGoogle: (idToken: string) => Promise<void>;
   loginWithFacebook: (accessToken: string) => Promise<void>;
+  loginWithApple: (identityToken: string, name?: { firstName?: string; lastName?: string }) => Promise<void>;
   logout: () => Promise<void>;
   deleteAccount: (password?: string) => Promise<void>;
   refreshUser: () => Promise<void>;
@@ -73,6 +74,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(loggedInUser);
   }, []);
 
+  const loginWithApple = useCallback(
+    async (identityToken: string, name?: { firstName?: string; lastName?: string }) => {
+      const loggedInUser = await authApi.loginWithApple(identityToken, name);
+      setUser(loggedInUser);
+    },
+    [],
+  );
+
   const logout = useCallback(async () => {
     await authApi.logout();
     setUser(null);
@@ -98,6 +107,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         verifySignupOtp,
         loginWithGoogle,
         loginWithFacebook,
+        loginWithApple,
         logout,
         deleteAccount,
         refreshUser,
