@@ -18,7 +18,7 @@ export function BusinessCard({ business }: { business: Business }) {
       href={`/businesses/${business.id}`}
       className="group block overflow-hidden rounded-2xl bg-surface shadow-soft transition-transform hover:-translate-y-1"
     >
-      <div className="relative h-40 w-full overflow-hidden" style={{ backgroundColor: `color-mix(in srgb, ${accent} 12%, white)` }}>
+      <div className="relative h-40 w-full overflow-hidden" style={{ backgroundColor: `color-mix(in srgb, ${accent} 12%, var(--color-surface))` }}>
         {logoUrl ? (
           <Image src={logoUrl} alt={business.name} fill className="object-cover transition-transform group-hover:scale-105" />
         ) : (
@@ -42,8 +42,8 @@ export function BusinessCard({ business }: { business: Business }) {
         </div>
         <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
           <span
-            className="inline-block rounded-full px-2.5 py-0.5 text-xs font-medium"
-            style={{ backgroundColor: `color-mix(in srgb, ${accent} 14%, white)`, color: accent }}
+            className="inline-block px-2.5 py-0.5 text-xs font-medium"
+            style={{ backgroundColor: `color-mix(in srgb, ${accent} 14%, var(--color-surface))`, color: accent }}
           >
             {translateCategory(business.category)}
           </span>

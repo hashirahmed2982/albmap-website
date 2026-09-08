@@ -4,7 +4,8 @@ import { useState, useCallback, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { MapPin, CheckCircle2 } from "lucide-react";
+import Image from "next/image";
+import { CheckCircle2 } from "lucide-react";
 import { resetPassword } from "@/lib/auth-api";
 import { useToast } from "@/lib/toast-context";
 import { ApiError } from "@/lib/api";
@@ -55,9 +56,7 @@ function ResetPasswordContent() {
     <div className="flex min-h-screen items-center justify-center bg-paper px-4">
       <div className="w-full max-w-md">
         <Link href="/" className="mb-8 flex items-center justify-center gap-2">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-white shadow-lift">
-            <MapPin size={22} strokeWidth={2.5} />
-          </div>
+          <Image src="/logo.png" alt="" width={40} height={40} />
           <span className="font-display text-2xl font-bold text-ink">AlbMap</span>
         </Link>
 
@@ -70,7 +69,7 @@ function ResetPasswordContent() {
               <p className="mt-4 text-sm text-ink-soft">{t("success")}</p>
               <Link
                 href="/login"
-                className="mt-6 inline-block rounded-full bg-primary px-6 py-3 text-sm font-semibold text-white shadow-lift"
+                className="mt-6 inline-block bg-primary px-6 py-3 text-sm font-semibold text-white shadow-lift"
               >
                 {t("goToLogin")}
               </Link>
@@ -105,7 +104,7 @@ function ResetPasswordContent() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full rounded-full bg-primary py-3 text-sm font-semibold text-white shadow-lift disabled:opacity-60"
+                  className="w-full bg-primary py-3 text-sm font-semibold text-white shadow-lift disabled:opacity-60"
                 >
                   {isSubmitting ? t("resetting") : t("resetPassword")}
                 </button>

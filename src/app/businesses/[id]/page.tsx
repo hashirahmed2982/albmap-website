@@ -16,7 +16,7 @@ import { getBusinessReviews, submitReview, deleteReview } from "@/lib/review-api
 import { recordAnalyticsEvent } from "@/lib/analytics-api";
 import { ApiError } from "@/lib/api";
 import { useToast } from "@/lib/toast-context";
-import { categoryColor, collapseOpeningHours, isEventFinished, resolveMediaUrl, timeAgo } from "@/lib/format";
+import { collapseOpeningHours, isEventFinished, resolveMediaUrl, timeAgo } from "@/lib/format";
 import { useCategoryTranslation } from "@/lib/category-translations";
 import type { Business, EventItem, Review } from "@/lib/types";
 
@@ -161,7 +161,6 @@ export default function BusinessDetailPage({ params }: { params: Promise<{ id: s
     );
   }
 
-  const accent = categoryColor(business.category);
   const logoUrl = resolveMediaUrl(business.logoUrl);
   const hours = collapseOpeningHours(business.openingHours);
   // Same "finished events are never useful to show" rule as the Events
@@ -173,12 +172,20 @@ export default function BusinessDetailPage({ params }: { params: Promise<{ id: s
     <div className="min-h-screen bg-paper">
       <Header />
 
-      <div className="relative h-64 w-full overflow-hidden md:h-80" style={{ backgroundColor: `color-mix(in srgb, ${accent} 15%, white)` }}>
+      {/* No-logo fallback matches the mobile app's Business Details hero:
+          solid brand red with a giant faint serif initial watermark,
+          instead of the old per-category-tinted background (color-mix
+          against white — a light-theme leftover that read as an odd
+          bright patch once the rest of the page went dark) with a
+          generic pin icon. */}
+      <div className="relative h-64 w-full overflow-hidden bg-primary md:h-80">
         {logoUrl ? (
           <Image src={logoUrl} alt={business.name} fill className="object-cover" priority />
         ) : (
           <div className="flex h-full w-full items-center justify-center">
-            <MapPin size={64} style={{ color: accent }} strokeWidth={1.2} />
+            <span className="font-display text-[220px] leading-none text-white/20">
+              {business.name.charAt(0).toUpperCase() || "?"}
+            </span>
           </div>
         )}
       </div>
@@ -189,10 +196,7 @@ export default function BusinessDetailPage({ params }: { params: Promise<{ id: s
             <div>
               <h1 className="font-display text-2xl font-bold text-ink md:text-3xl">{business.name}</h1>
               <div className="mt-2 flex flex-wrap items-center gap-3">
-                <span
-                  className="rounded-full px-3 py-1 text-xs font-semibold"
-                  style={{ backgroundColor: `color-mix(in srgb, ${accent} 14%, white)`, color: accent }}
-                >
+                <span className="text-xs font-semibold tracking-wide text-ink-soft uppercase">
                   {translateCategory(business.category)}
                 </span>
                 {business.rating != null && (
@@ -222,7 +226,7 @@ export default function BusinessDetailPage({ params }: { params: Promise<{ id: s
               <a
                 href={`tel:${business.phone}`}
                 onClick={() => recordAnalyticsEvent(id, "callClick")}
-                className="flex items-center gap-2 rounded-full border border-line px-5 py-2.5 text-sm font-medium text-ink hover:bg-paper-warm"
+                className="flex items-center gap-2 border border-line px-5 py-2.5 text-sm font-medium text-ink hover:bg-paper-warm"
               >
                 <Phone size={16} /> {t("call")}
               </a>
@@ -232,7 +236,7 @@ export default function BusinessDetailPage({ params }: { params: Promise<{ id: s
                 href={`https://wa.me/${business.whatsappNumber.replace(/[^0-9]/g, "")}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 rounded-full border border-[#25D366] px-5 py-2.5 text-sm font-medium text-[#25D366] hover:bg-[#25D366]/5"
+                className="flex items-center gap-2 border border-line px-5 py-2.5 text-sm font-medium text-ink hover:bg-paper-warm"
               >
                 <MessageCircle size={16} /> {t("whatsapp")}
               </a>
@@ -242,8 +246,7 @@ export default function BusinessDetailPage({ params }: { params: Promise<{ id: s
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => recordAnalyticsEvent(id, "websiteClick")}
-              className="flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold text-white shadow-lift"
-              style={{ backgroundColor: accent }}
+              className="flex items-center gap-2 bg-primary px-5 py-2.5 text-sm font-semibold text-white"
             >
               <Navigation size={16} /> {t("directions")}
             </a>
@@ -316,7 +319,7 @@ export default function BusinessDetailPage({ params }: { params: Promise<{ id: s
                 <button
                   type="submit"
                   disabled={isSubmittingReview}
-                  className="rounded-full bg-primary px-5 py-2 text-sm font-semibold text-white disabled:opacity-60"
+                  className="bg-primary px-5 py-2 text-sm font-semibold text-white disabled:opacity-60"
                 >
                   {isSubmittingReview
                     ? t("submitting")
@@ -329,7 +332,7 @@ export default function BusinessDetailPage({ params }: { params: Promise<{ id: s
                     type="button"
                     onClick={handleDeleteReview}
                     disabled={isDeletingReview}
-                    className="flex items-center gap-1.5 rounded-full px-3 py-2 text-sm font-medium text-error hover:bg-error/5 disabled:opacity-60"
+                    className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-error hover:bg-error/5 disabled:opacity-60"
                   >
                     <Trash2 size={15} /> {isDeletingReview ? t("deleting") : t("deleteReview")}
                   </button>

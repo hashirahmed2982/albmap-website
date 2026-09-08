@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { MapPin, Menu, X, Bell, Heart, User as UserIcon, LayoutDashboard, LogOut, ChevronDown } from "lucide-react";
+import { Menu, X, Bell, Heart, User as UserIcon, LayoutDashboard, LogOut, ChevronDown } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { resolveMediaUrl } from "@/lib/format";
@@ -36,9 +36,7 @@ export function Header() {
     <header className="sticky top-0 z-40 border-b border-line bg-surface/90 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-3.5">
         <Link href="/" className="flex items-center gap-2">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-white">
-            <MapPin size={18} strokeWidth={2.5} />
-          </div>
+          <Image src="/logo.png" alt="" width={32} height={32} priority />
           <span className="font-display text-xl font-bold text-ink">AlbMap</span>
         </Link>
 
@@ -47,7 +45,7 @@ export function Header() {
             <Link
               key={link.href}
               href={link.href}
-              className={`rounded-full px-4 py-2 text-sm font-medium transition-colors ${
+              className={`px-4 py-2 text-sm font-medium transition-colors ${
                 pathname?.startsWith(link.href)
                   ? "bg-primary/10 text-primary"
                   : "text-ink-soft hover:bg-paper-warm hover:text-ink"
@@ -92,7 +90,7 @@ export function Header() {
               <div className="relative ml-1">
                 <button
                   onClick={() => setAccountOpen((v) => !v)}
-                  className="flex items-center gap-1.5 rounded-full border border-line py-1.5 pl-1.5 pr-3 text-sm font-medium text-ink hover:bg-paper-warm"
+                  className="flex items-center gap-1.5 border border-line py-1.5 pl-1.5 pr-3 text-sm font-medium text-ink hover:bg-paper-warm"
                 >
                   <div className="relative flex h-7 w-7 shrink-0 items-center justify-center overflow-hidden rounded-full bg-primary/10 text-primary">
                     {avatarUrl ? (
@@ -131,7 +129,7 @@ export function Header() {
             !isLoading && (
               <Link
                 href="/login"
-                className="ml-1 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-white shadow-lift"
+                className="ml-1 bg-primary px-5 py-2.5 text-sm font-semibold text-white"
               >
                 {t("logIn")}
               </Link>
@@ -189,7 +187,7 @@ export function Header() {
               <Link
                 href="/login"
                 onClick={() => setMobileOpen(false)}
-                className="mt-2 rounded-full bg-primary px-4 py-2.5 text-center text-sm font-semibold text-white"
+                className="mt-2 bg-primary px-4 py-2.5 text-center text-sm font-semibold text-white"
               >
                 {t("logIn")}
               </Link>

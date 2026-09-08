@@ -130,14 +130,14 @@ function NotificationsContent() {
               {unreadCount > 0 && (
                 <button
                   onClick={handleMarkAllRead}
-                  className="flex items-center gap-1.5 rounded-full border border-line px-4 py-2 text-sm font-medium text-ink hover:bg-paper-warm"
+                  className="flex items-center gap-1.5 border border-line px-4 py-2 text-sm font-medium text-ink hover:bg-paper-warm"
                 >
                   <CheckCheck size={15} /> {t("markAllRead")}
                 </button>
               )}
               <button
                 onClick={handleClearAll}
-                className="flex items-center gap-1.5 rounded-full border border-line px-4 py-2 text-sm font-medium text-ink-soft hover:border-error hover:text-error"
+                className="flex items-center gap-1.5 border border-line px-4 py-2 text-sm font-medium text-ink-soft hover:border-error hover:text-error"
               >
                 <Trash2 size={15} /> {t("clearAll")}
               </button>
@@ -169,7 +169,7 @@ function NotificationsContent() {
                 >
                   <div
                     className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full"
-                    style={{ backgroundColor: `color-mix(in srgb, ${iconColorFor(n.type)} 14%, white)` }}
+                    style={{ backgroundColor: `color-mix(in srgb, ${iconColorFor(n.type)} 14%, var(--color-surface))` }}
                   >
                     <Bell size={16} style={{ color: iconColorFor(n.type) }} />
                   </div>

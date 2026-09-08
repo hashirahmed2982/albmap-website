@@ -42,16 +42,16 @@ function FavoritesContent() {
         <h1 className="font-display text-3xl font-bold text-ink">{t("title")}</h1>
         <p className="mt-1 text-sm text-ink-soft">{t("subtitle")}</p>
 
-        <div className="mt-6 flex items-center gap-1 rounded-full border border-line bg-surface p-1 w-fit">
+        <div className="mt-6 flex items-center gap-1 border border-line bg-surface p-1 w-fit">
           <button
             onClick={() => setTab("businesses")}
-            className={`flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-medium transition-colors ${tab === "businesses" ? "bg-primary text-white" : "text-ink-soft"}`}
+            className={`flex items-center gap-1.5 px-4 py-2 text-sm font-medium transition-colors ${tab === "businesses" ? "bg-primary text-white" : "text-ink-soft"}`}
           >
             <Heart size={15} /> {t("businesses")} ({favorites.length})
           </button>
           <button
             onClick={() => setTab("events")}
-            className={`flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-medium transition-colors ${tab === "events" ? "bg-primary text-white" : "text-ink-soft"}`}
+            className={`flex items-center gap-1.5 px-4 py-2 text-sm font-medium transition-colors ${tab === "events" ? "bg-primary text-white" : "text-ink-soft"}`}
           >
             <CalendarDays size={15} /> {t("events")} ({eventFavorites.length})
           </button>

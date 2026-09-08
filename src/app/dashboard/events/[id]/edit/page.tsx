@@ -204,7 +204,7 @@ function EditEventContent({ id }: { id: string }) {
             </Field>
           </div>
 
-          <button type="submit" disabled={isSubmitting} className="w-full rounded-full bg-primary py-3 text-sm font-semibold text-white shadow-lift disabled:opacity-60">
+          <button type="submit" disabled={isSubmitting} className="w-full bg-primary py-3 text-sm font-semibold text-white shadow-lift disabled:opacity-60">
             {isSubmitting ? t("saving") : t("saveChanges")}
           </button>
         </form>

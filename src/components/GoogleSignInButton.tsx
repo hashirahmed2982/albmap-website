@@ -63,7 +63,7 @@ export function GoogleSignInButton({
 
   if (!clientId) {
     return (
-      <div className="rounded-full border border-line px-4 py-3 text-center text-sm text-ink-soft">
+      <div className="border border-line px-4 py-3 text-center text-sm text-ink-soft">
         Google sign-in isn&apos;t configured yet.
       </div>
     );

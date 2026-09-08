@@ -68,13 +68,13 @@ function DashboardContent() {
           <div className="flex gap-2">
             <Link
               href="/dashboard/events/new"
-              className="flex items-center gap-1.5 rounded-full border border-line px-5 py-2.5 text-sm font-semibold text-ink hover:bg-paper-warm"
+              className="flex items-center gap-1.5 border border-line px-5 py-2.5 text-sm font-semibold text-ink hover:bg-paper-warm"
             >
               <CalendarDays size={16} /> {t("addEventButton")}
             </Link>
             <Link
               href="/dashboard/businesses/new"
-              className="flex items-center gap-1.5 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-white shadow-lift"
+              className="flex items-center gap-1.5 bg-primary px-5 py-2.5 text-sm font-semibold text-white shadow-lift"
             >
               <Plus size={16} /> {t("addBusiness")}
             </Link>
@@ -88,7 +88,7 @@ function DashboardContent() {
             <div className="flex flex-col items-center gap-4 rounded-2xl border border-dashed border-line py-20 text-ink-soft">
               <Store size={28} />
               <p className="text-sm">{t("noneYet")}</p>
-              <Link href="/dashboard/businesses/new" className="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-white">
+              <Link href="/dashboard/businesses/new" className="bg-primary px-5 py-2.5 text-sm font-semibold text-white">
                 {t("addFirst")}
               </Link>
             </div>
@@ -109,7 +109,7 @@ function DashboardContent() {
                     <div className="flex items-center gap-2">
                       <h3 className="font-display font-semibold text-ink">{b.name}</h3>
                       <span
-                        className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                        className={`px-2.5 py-0.5 text-xs font-medium ${
                           isDeactivated ? "bg-ink-soft/10 text-ink-soft" : STATUS_STYLES[b.status]
                         }`}
                       >
@@ -162,7 +162,7 @@ function DashboardContent() {
               <div className="flex flex-col items-center gap-4 rounded-2xl border border-dashed border-line py-16 text-ink-soft">
                 <CalendarDays size={28} />
                 <p className="text-sm">{t("myEventsEmptyText")}</p>
-                <Link href="/dashboard/events/new" className="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-white">
+                <Link href="/dashboard/events/new" className="bg-primary px-5 py-2.5 text-sm font-semibold text-white">
                   {t("myEventsAddFirst")}
                 </Link>
               </div>
@@ -182,7 +182,7 @@ function DashboardContent() {
                       <div className="min-w-0">
                         <div className="flex items-center gap-2">
                           <h3 className="font-display font-semibold text-ink">{e.name}</h3>
-                          <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${statusStyle}`}>{statusLabel}</span>
+                          <span className={`px-2.5 py-0.5 text-xs font-medium ${statusStyle}`}>{statusLabel}</span>
                         </div>
                         <p className="mt-1 text-sm" style={{ color: categoryColor(e.category) }}>{e.businessName}</p>
                         <p className="mt-1 text-xs text-ink-soft">{formatDateTime(e.startTime)}</p>

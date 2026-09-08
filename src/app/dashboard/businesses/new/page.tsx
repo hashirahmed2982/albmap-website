@@ -232,7 +232,7 @@ function AddBusinessContent() {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full rounded-full bg-primary py-3 text-sm font-semibold text-white shadow-lift disabled:opacity-60"
+            className="w-full bg-primary py-3 text-sm font-semibold text-white shadow-lift disabled:opacity-60"
           >
             {isSubmitting ? t("submitting") : t("submitForApproval")}
           </button>
@@ -250,7 +250,7 @@ function AddBusinessContent() {
               {t("duplicateBody", { name: duplicate.name, address: duplicate.address, distance: duplicate.distanceMeters })}
             </p>
             <div className="mt-5 flex gap-2">
-              <button onClick={() => setDuplicate(null)} className="flex-1 rounded-full border border-line py-2.5 text-sm font-medium text-ink">
+              <button onClick={() => setDuplicate(null)} className="flex-1 border border-line py-2.5 text-sm font-medium text-ink">
                 {t("cancel")}
               </button>
               <button
@@ -258,7 +258,7 @@ function AddBusinessContent() {
                   setDuplicate(null);
                   doSubmit(true);
                 }}
-                className="flex-1 rounded-full bg-primary py-2.5 text-sm font-semibold text-white"
+                className="flex-1 bg-primary py-2.5 text-sm font-semibold text-white"
               >
                 {t("submitAnyway")}
               </button>

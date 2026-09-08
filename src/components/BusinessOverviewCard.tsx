@@ -30,7 +30,7 @@ export function BusinessOverviewCard({
       <div className="flex items-center gap-3.5 rounded-2xl bg-surface p-4 shadow-lift">
         <div
           className="relative h-16 w-16 shrink-0 overflow-hidden rounded-xl"
-          style={{ backgroundColor: `color-mix(in srgb, ${accent} 12%, white)` }}
+          style={{ backgroundColor: `color-mix(in srgb, ${accent} 12%, var(--color-surface))` }}
         >
           {logoUrl ? (
             <Image src={logoUrl} alt={business.name} fill className="object-cover" />

@@ -64,7 +64,7 @@ export function FacebookSignInButton({
 
   if (!appId) {
     return (
-      <div className="rounded-full border border-line px-4 py-3 text-center text-sm text-ink-soft">
+      <div className="border border-line px-4 py-3 text-center text-sm text-ink-soft">
         Facebook sign-in isn&apos;t configured yet.
       </div>
     );
@@ -81,7 +81,7 @@ export function FacebookSignInButton({
         type="button"
         onClick={handleClick}
         disabled={!isReady}
-        className="flex w-full items-center justify-center gap-2 rounded-full border border-line bg-surface px-4 py-3 text-sm font-medium text-ink transition-colors hover:bg-paper-warm disabled:opacity-50"
+        className="flex w-full items-center justify-center gap-2 border border-line bg-surface px-4 py-3 text-sm font-medium text-ink transition-colors hover:bg-paper-warm disabled:opacity-50"
       >
         <Facebook size={18} className="text-[#1877F2]" />
         Continue with Facebook

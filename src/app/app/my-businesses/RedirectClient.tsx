@@ -110,7 +110,7 @@ export function RedirectClient() {
         <p className="mt-2 text-sm text-ink-soft">{t("redirectingToStore", { store })}</p>
         <a
           href={STORE_URL[status]}
-          className="mt-8 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-white"
+          className="mt-8 bg-primary px-6 py-3 text-sm font-semibold text-white"
         >
           {t("openInStore", { store })}
         </a>

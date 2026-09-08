@@ -170,7 +170,7 @@ export function MapView({
       <button
         type="button"
         onClick={handleRecenterClick}
-        className="absolute bottom-4 right-4 z-[1000] flex h-11 w-11 items-center justify-center rounded-full bg-surface text-primary shadow-lift transition-transform hover:scale-105"
+        className="absolute bottom-4 right-4 z-[1000] flex h-11 w-11 items-center justify-center bg-surface text-primary shadow-lift transition-transform hover:scale-105"
         aria-label="Recenter on my location"
       >
         <LocateFixed size={20} />

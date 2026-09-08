@@ -126,7 +126,7 @@ export default function ContactPage() {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="flex items-center justify-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-semibold text-white shadow-lift disabled:opacity-60"
+            className="flex items-center justify-center gap-2 bg-primary px-5 py-3 text-sm font-semibold text-white shadow-lift disabled:opacity-60"
           >
             <Mail size={16} /> {isSubmitting ? "…" : t("sendMessage")}
           </button>

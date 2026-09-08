@@ -237,7 +237,7 @@ function EditBusinessContent({ id }: { id: string }) {
             <OpeningHoursEditor value={openingHours} onChange={setOpeningHours} />
           </div>
 
-          <button type="submit" disabled={isSubmitting} className="w-full rounded-full bg-primary py-3 text-sm font-semibold text-white shadow-lift disabled:opacity-60">
+          <button type="submit" disabled={isSubmitting} className="w-full bg-primary py-3 text-sm font-semibold text-white shadow-lift disabled:opacity-60">
             {isSubmitting ? t("saving") : t("saveChanges")}
           </button>
         </form>
@@ -249,12 +249,12 @@ function EditBusinessContent({ id }: { id: string }) {
             <h3 className="font-display text-lg font-semibold text-ink">{t("reviewWarningTitle")}</h3>
             <p className="mt-2 text-sm text-ink-soft">{t("reviewWarningBody")}</p>
             <div className="mt-5 flex gap-2">
-              <button onClick={() => setShowReviewWarning(false)} className="flex-1 rounded-full border border-line py-2.5 text-sm font-medium text-ink">
+              <button onClick={() => setShowReviewWarning(false)} className="flex-1 border border-line py-2.5 text-sm font-medium text-ink">
                 {t("cancel")}
               </button>
               <button
                 onClick={() => { setShowReviewWarning(false); doSave(); }}
-                className="flex-1 rounded-full bg-primary py-2.5 text-sm font-semibold text-white"
+                className="flex-1 bg-primary py-2.5 text-sm font-semibold text-white"
               >
                 {t("continueAnyway")}
               </button>

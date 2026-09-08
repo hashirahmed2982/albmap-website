@@ -85,7 +85,7 @@ export function LegalPageClient({
         <p className="text-sm">{error ?? `Couldn't load ${fallbackHeading}.`}</p>
         <button
           onClick={load}
-          className="rounded-full border border-line px-4 py-2 text-sm font-medium text-ink hover:bg-paper-warm"
+          className="border border-line px-4 py-2 text-sm font-medium text-ink hover:bg-paper-warm"
         >
           Try again
         </button>
