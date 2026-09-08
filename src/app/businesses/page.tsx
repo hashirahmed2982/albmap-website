@@ -11,7 +11,6 @@ import { MapViewClient } from "@/components/MapViewClient";
 import { BusinessOverviewCard } from "@/components/BusinessOverviewCard";
 import { getBusinesses, searchBusinesses } from "@/lib/business-api";
 import { getCategories, localizedCategoryName } from "@/lib/category-api";
-import { categoryColor } from "@/lib/format";
 import { useGeolocation } from "@/hooks/useGeolocation";
 import { useToast } from "@/lib/toast-context";
 import type { Business, Category, Locale } from "@/lib/types";
@@ -130,12 +129,7 @@ function BusinessesContent() {
             <button
               key={cat.name}
               onClick={() => setSelectedCategory(cat.name === selectedCategory ? "" : cat.name)}
-              className="border px-3.5 py-1.5 text-xs font-medium transition-colors"
-              style={{
-                borderColor: categoryColor(cat.name),
-                backgroundColor: selectedCategory === cat.name ? categoryColor(cat.name) : "transparent",
-                color: selectedCategory === cat.name ? "white" : categoryColor(cat.name),
-              }}
+              className={`border px-3.5 py-1.5 text-xs font-medium transition-colors ${selectedCategory === cat.name ? "border-primary bg-primary text-white" : "border-line text-ink-soft"}`}
             >
               {localizedCategoryName(cat, locale)}
             </button>

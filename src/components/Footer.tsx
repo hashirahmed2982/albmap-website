@@ -31,60 +31,92 @@ export function Footer() {
       .catch(() => {});
   }, []);
 
+  const navLinks = [
+    { href: "/about", label: t("aboutUs") },
+    { href: "/contact", label: t("contactUs") },
+    { href: "/privacy", label: t("privacyPolicy") },
+    { href: "/terms", label: t("termsConditions") },
+  ];
+
   return (
     <footer className="border-t border-line bg-surface">
-      <div className="mx-auto max-w-6xl px-6 py-10">
-        <div className="flex flex-col items-center gap-6 sm:flex-row sm:items-start sm:justify-between">
-          <Link href="/" className="flex items-center gap-2">
-            <Image src="/logo.png" alt="" width={28} height={28} />
-            <span className="font-display text-lg font-bold text-ink">AlbMap</span>
-          </Link>
+      {/* A single thin brand-accent line is the only color in an otherwise
+          monochrome footer — echoes the app's red without turning the
+          whole footer into a colored block. */}
+      <div className="h-[3px] bg-primary" />
 
-          <nav className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-ink-soft">
-            <Link href="/about" className="hover:text-primary">{t("aboutUs")}</Link>
-            <Link href="/contact" className="hover:text-primary">{t("contactUs")}</Link>
-            <Link href="/privacy" className="hover:text-primary">{t("privacyPolicy")}</Link>
-            <Link href="/terms" className="hover:text-primary">{t("termsConditions")}</Link>
-          </nav>
+      <div className="mx-auto max-w-6xl px-6 py-16">
+        <div className="grid grid-cols-1 gap-12 lg:grid-cols-12">
+          {/* Brand */}
+          <div className="lg:col-span-5">
+            <Link href="/" className="flex items-center gap-2.5">
+              <Image src="/logo.png" alt="" width={32} height={32} />
+              <span className="font-display text-xl font-bold text-ink">AlbMap</span>
+            </Link>
+            <p className="mt-4 max-w-xs text-sm leading-relaxed text-ink-soft">{t("copyright")}</p>
 
-          {social && (
-            <div className="flex items-center gap-3">
-              {SOCIAL_ICONS.filter(({ key }) => social[key]).map(({ key, Icon, label }) => (
-                <a
-                  key={key}
-                  href={social[key]!}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={label}
-                  className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary hover:bg-primary/20"
-                >
-                  <Icon size={15} />
-                </a>
+            {social && (
+              <div className="mt-6 flex items-center gap-3">
+                {SOCIAL_ICONS.filter(({ key }) => social[key]).map(({ key, Icon, label }) => (
+                  <a
+                    key={key}
+                    href={social[key]!}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={label}
+                    className="flex h-9 w-9 items-center justify-center rounded-full border border-line text-ink-soft transition-colors hover:border-primary hover:text-primary"
+                  >
+                    <Icon size={15} />
+                  </a>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Site links */}
+          <div className="lg:col-span-3">
+            <nav className="flex flex-col gap-3 text-sm">
+              {navLinks.map((link) => (
+                <Link key={link.href} href={link.href} className="w-fit text-ink-soft transition-colors hover:text-primary">
+                  {link.label}
+                </Link>
               ))}
-            </div>
-          )}
-        </div>
+            </nav>
+          </div>
 
-        {/* Two QR codes, one per store — the app isn't in either store
-            yet (see src/lib/app-links.ts), but the codes/links are wired
-            up ready to go the moment it ships. */}
-        <div className="mt-8 flex flex-col items-center gap-4 border-t border-line pt-8 sm:flex-row sm:justify-center">
-          <span className="text-sm font-medium text-ink">{t("getTheApp")}</span>
-          <div className="flex items-center gap-6">
-            <a href={ANDROID_PLAY_STORE_URL} target="_blank" rel="noopener noreferrer" className="flex flex-col items-center gap-1.5">
-              <QrCode value={ANDROID_PLAY_STORE_URL} size={72} />
-              <span className="text-xs text-ink-soft">{t("scanAndroid")}</span>
-            </a>
-            <a href={IOS_APP_STORE_URL} target="_blank" rel="noopener noreferrer" className="flex flex-col items-center gap-1.5">
-              <QrCode value={IOS_APP_STORE_URL} size={72} />
-              <span className="text-xs text-ink-soft">{t("scanIos")}</span>
-            </a>
+          {/* Get the app */}
+          <div className="lg:col-span-4">
+            <span className="text-sm font-semibold text-ink">{t("getTheApp")}</span>
+            <div className="mt-4 flex items-center gap-6">
+              <a
+                href={ANDROID_PLAY_STORE_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group flex flex-col items-center gap-2"
+              >
+                <div className="border border-line p-2 transition-colors group-hover:border-primary">
+                  <QrCode value={ANDROID_PLAY_STORE_URL} size={72} />
+                </div>
+                <span className="text-xs text-ink-soft">{t("scanAndroid")}</span>
+              </a>
+              <a
+                href={IOS_APP_STORE_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group flex flex-col items-center gap-2"
+              >
+                <div className="border border-line p-2 transition-colors group-hover:border-primary">
+                  <QrCode value={IOS_APP_STORE_URL} size={72} />
+                </div>
+                <span className="text-xs text-ink-soft">{t("scanIos")}</span>
+              </a>
+            </div>
           </div>
         </div>
 
-        <p className="mt-8 text-center text-xs text-ink-soft sm:text-left">
-          © {new Date().getFullYear()} AlbMap. {t("copyright")}
-        </p>
+        <div className="mt-14 border-t border-line pt-6">
+          <p className="text-center text-xs text-ink-soft sm:text-left">© {new Date().getFullYear()} AlbMap</p>
+        </div>
       </div>
     </footer>
   );
