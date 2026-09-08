@@ -66,6 +66,7 @@
     "somethingWrong": "Diçka shkoi keq. Ju lutem provoni përsëri.",
     "googleSignInFailed": "Hyrja me Google dështoi.",
     "facebookSignInFailed": "Hyrja me Facebook dështoi.",
+    "appleSignInFailed": "Hyrja me Apple dështoi.",
     "verifyEmailTitle": "Verifiko email-in tënd",
     "verifyEmailSubtitle": "Dërguam një kod 6-shifror te {email}. Vendose më poshtë për të përfunduar krijimin e llogarisë.",
     "verificationCode": "Kodi i verifikimit",

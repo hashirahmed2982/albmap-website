@@ -66,6 +66,7 @@
     "somethingWrong": "Etwas ist schiefgelaufen. Bitte versuche es erneut.",
     "googleSignInFailed": "Google-Anmeldung fehlgeschlagen.",
     "facebookSignInFailed": "Facebook-Anmeldung fehlgeschlagen.",
+    "appleSignInFailed": "Apple-Anmeldung fehlgeschlagen.",
     "verifyEmailTitle": "Bestätige deine E-Mail",
     "verifyEmailSubtitle": "Wir haben einen 6-stelligen Code an {email} gesendet. Gib ihn unten ein, um dein Konto zu erstellen.",
     "verificationCode": "Bestätigungscode",
