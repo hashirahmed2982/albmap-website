@@ -118,7 +118,7 @@ function AnalyticsContent({ id }: { id: string }) {
             <button
               type="submit"
               disabled={isSending}
-              className="flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-white disabled:opacity-60"
+              className="flex items-center gap-2 bg-primary px-5 py-2.5 text-sm font-semibold text-white disabled:opacity-60"
             >
               <Send size={15} /> {isSending ? t("sending") : t("sendNotification")}
             </button>

@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useTranslations } from "next-intl";
-import { MapPin, Facebook, Instagram, Twitter, Youtube, Linkedin, Music2 } from "lucide-react";
+import { Facebook, Instagram, Twitter, Youtube, Linkedin, Music2 } from "lucide-react";
 import { getContent } from "@/lib/content-api";
 import { ANDROID_PLAY_STORE_URL, IOS_APP_STORE_URL } from "@/lib/app-links";
 import { QrCode } from "@/components/QrCode";
@@ -35,9 +36,7 @@ export function Footer() {
       <div className="mx-auto max-w-6xl px-6 py-10">
         <div className="flex flex-col items-center gap-6 sm:flex-row sm:items-start sm:justify-between">
           <Link href="/" className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-white">
-              <MapPin size={16} strokeWidth={2.5} />
-            </div>
+            <Image src="/logo.png" alt="" width={28} height={28} />
             <span className="font-display text-lg font-bold text-ink">AlbMap</span>
           </Link>
 

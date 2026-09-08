@@ -17,7 +17,7 @@ export function EventCard({ event }: { event: EventItem }) {
       href={`/events/${event.id}`}
       className="group block overflow-hidden rounded-2xl bg-surface shadow-soft transition-transform hover:-translate-y-1"
     >
-      <div className="relative h-40 w-full overflow-hidden" style={{ backgroundColor: `color-mix(in srgb, ${accent} 12%, white)` }}>
+      <div className="relative h-40 w-full overflow-hidden" style={{ backgroundColor: `color-mix(in srgb, ${accent} 12%, var(--color-surface))` }}>
         {imageUrl ? (
           <Image src={imageUrl} alt={event.name} fill className="object-cover transition-transform group-hover:scale-105" />
         ) : (

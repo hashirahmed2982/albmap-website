@@ -4,6 +4,7 @@ import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
+import Image from "next/image";
 import { MapPin, Eye, EyeOff } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { ApiError } from "@/lib/api";
@@ -129,9 +130,7 @@ export default function LoginPage() {
 
       <div className="relative z-10 w-full max-w-md">
         <Link href="/" className="mb-8 flex items-center justify-center gap-2">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-white shadow-lift">
-            <MapPin size={22} strokeWidth={2.5} />
-          </div>
+          <Image src="/logo.png" alt="" width={40} height={40} />
           <span className="font-display text-2xl font-bold text-ink">AlbMap</span>
         </Link>
 
@@ -242,7 +241,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full rounded-full bg-primary py-3 text-sm font-semibold text-white shadow-lift transition-transform hover:scale-[1.01] active:scale-[0.99] disabled:opacity-60"
+              className="w-full bg-primary py-3 text-sm font-semibold text-white shadow-lift transition-transform hover:scale-[1.01] active:scale-[0.99] disabled:opacity-60"
             >
               {isSubmitting
                 ? t("pleaseWait")

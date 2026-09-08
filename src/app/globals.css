@@ -1,52 +1,86 @@
 @import "tailwindcss";
 
 /*
-  Design tokens — sourced directly from the Flutter app's
-  core/theme/app_colors.dart and app_text_styles.dart, so the website is
-  genuinely brand-consistent rather than a reinterpretation:
-    primary   #E31320  (app's AppColors.primary)
-    secondary #FF8A3D  (app's AppColors.secondary)
-    ink       #1A1D1C  (app's AppColors.textPrimary)
+  Design tokens — "Bold Editorial", sourced directly from the Flutter
+  app's core/theme/app_colors.dart / app_text_styles.dart / app_theme.dart,
+  so the website is genuinely brand-consistent rather than a
+  reinterpretation. This replaces the previous warm-paper light theme
+  with the same dark, high-contrast system now used app-wide: a near-
+  black background, exactly two accents (red for actions, gold for
+  ratings only), sharp corners, and borders instead of shadows for depth.
 
-  One deliberate departure: the app's background is a cool, dense
-  #F7F8FA — right for a mobile UI packed with cards, but flat for a
-  spacious editorial marketing layout. The website uses a warm paper tone
-  instead (#FBF8F5), which still reads as "the same brand," just
-  breathing more.
+  Every token KEEPS its old name (ink/paper/surface/line/...) even
+  though the light-theme meaning those names originally implied
+  ("paper" = a light background) no longer literally applies — renaming
+  every one of the ~400 call sites across components/pages that already
+  reference these tokens isn't worth it just to make the name match the
+  new value; only the values below changed.
 */
 @theme {
-  --color-primary: #e31320;
-  --color-primary-dark: #b30f19;
-  --color-primary-light: #ff4d54;
-  --color-secondary: #ff8a3d;
-  --color-secondary-light: #ffb07a;
+  --color-primary: #d73337;
+  --color-primary-dark: #aa2226;
+  --color-primary-light: #f14d4c;
+  /* The old second accent (orange) has no equivalent in Bold Editorial —
+     the spec is explicit that red and gold are the only two accents
+     anywhere, so secondary now just aliases primary (matches the app). */
+  --color-secondary: #d73337;
+  --color-secondary-light: #f14d4c;
 
-  --color-ink: #1a1d1c;
-  --color-ink-soft: #52514d;
-  --color-paper: #fbf8f5;
-  --color-paper-warm: #f3ece3;
-  --color-surface: #ffffff;
-  --color-line: #e8e1d6;
+  --color-ink: #f5ecea; /* body/heading text */
+  --color-ink-soft: #9b8b88; /* muted/secondary text */
+  --color-paper: #0a0606; /* page background */
+  --color-paper-warm: #1c1c1c; /* hover/highlighted surface, was a warm cream tint */
+  --color-surface: #110f0f; /* card/panel background */
+  --color-line: #2c2c2c; /* border */
+  --color-line-strong: #4a4a4a; /* emphasis border (outlined buttons, dialogs) */
 
-  --color-success: #2e9e5b;
-  --color-warning: #e8a83c;
-  --color-error: #d64545;
-  --color-info: #3b82c4;
+  --color-success: #9b8b88;
+  --color-warning: #ddb049;
+  --color-error: #d73337;
+  --color-info: #9b8b88;
 
-  /* Category accents — mirrors the mobile app's categoryColor() mapping,
-     used for category chips, business cards, and the hero pin cluster. */
-  --color-cat-restaurants: #e35d13;
-  --color-cat-cafes: #b5651d;
-  --color-cat-shops: #3b82c4;
-  --color-cat-services: #52525b;
-  --color-cat-health: #2e9e5b;
-  --color-cat-entertainment: #8a3de3;
+  /* Ratings-only accent — do not use elsewhere, matches the app's gold. */
+  --color-gold: #ddb049;
 
-  --font-display: var(--font-poppins), ui-sans-serif, system-ui, sans-serif;
-  --font-body: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  /* Category accents — same palette CategoryVisuals hashes into on the
+     app, reused here so a category reads the same "family" of color on
+     both. No longer name-specific (the app moved off per-name colors to
+     a hash-based palette when categories became admin-managed/
+     unbounded), but keeping these named tokens avoids touching every
+     call site that already references cat-restaurants etc. */
+  --color-cat-restaurants: #ff7043;
+  --color-cat-cafes: #8d6e63;
+  --color-cat-shops: #42a5f5;
+  --color-cat-services: #5c6bc0;
+  --color-cat-health: #66bb6a;
+  --color-cat-entertainment: #ab47bc;
 
-  --shadow-soft: 0 2px 12px -2px rgb(26 29 28 / 0.06), 0 8px 32px -8px rgb(26 29 28 / 0.08);
-  --shadow-lift: 0 8px 24px -6px rgb(227 19 32 / 0.18), 0 2px 8px -2px rgb(26 29 28 / 0.06);
+  --font-display: var(--font-display-face), ui-serif, Georgia, serif;
+  --font-body: var(--font-body-face), ui-sans-serif, system-ui, sans-serif;
+
+  /* Border-simulating "shadows" instead of a blurred drop shadow — a
+     zero-blur box-shadow renders identically to a border, so every
+     existing shadow-soft/shadow-lift call site (51 of them) gets the
+     "1.5px border instead of shadow" treatment for free. shadow-lift is
+     used on hover — turning the border red on hover reuses the brand
+     accent as the interactive-emphasis cue instead of a lift/blur effect
+     that doesn't have a mobile-app equivalent to match anyway. */
+  --shadow-soft: 0 0 0 1.5px var(--color-line);
+  --shadow-lift: 0 0 0 1.5px var(--color-primary);
+
+  /* Sharp corners is *the* defining visual rule of this design system —
+     zeroing the radius scale here makes every existing rounded-lg/xl/2xl/
+     3xl call site (121 of them) sharp app-wide without editing any of
+     them. rounded-full (106 call sites — avatars, small circular
+     controls) isn't part of this scale, so those stay circular, matching
+     the one deliberate exception the spec calls out. */
+  --radius: 0px;
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --radius-xl: 0px;
+  --radius-2xl: 0px;
+  --radius-3xl: 0px;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -73,11 +107,11 @@ body {
 }
 
 /* Visible keyboard focus everywhere, deliberately not just the browser
-   default outline — matches the brand's rounded, warm visual language. */
+   default outline — matches the brand's sharp, high-contrast visual
+   language (no rounded focus ring, unlike the old theme's). */
 :focus-visible {
   outline: 2px solid var(--color-primary);
   outline-offset: 2px;
-  border-radius: 4px;
 }
 
 @keyframes float {

@@ -110,7 +110,7 @@ export default function EventDetailPage({ params }: { params: Promise<{ id: stri
   return (
     <div className="min-h-screen bg-paper">
       <Header />
-      <div className="relative h-64 w-full overflow-hidden md:h-80" style={{ backgroundColor: `color-mix(in srgb, ${accent} 15%, white)` }}>
+      <div className="relative h-64 w-full overflow-hidden md:h-80" style={{ backgroundColor: `color-mix(in srgb, ${accent} 15%, var(--color-surface))` }}>
         {imageUrl ? (
           <Image src={imageUrl} alt={event.name} fill className="object-cover" priority />
         ) : (
@@ -151,8 +151,8 @@ export default function EventDetailPage({ params }: { params: Promise<{ id: stri
           </div>
 
           <span
-            className="mt-3 inline-block rounded-full px-3 py-1 text-xs font-semibold"
-            style={{ backgroundColor: `color-mix(in srgb, ${accent} 14%, white)`, color: accent }}
+            className="mt-3 inline-block px-3 py-1 text-xs font-semibold"
+            style={{ backgroundColor: `color-mix(in srgb, ${accent} 14%, var(--color-surface))`, color: accent }}
           >
             {translateCategory(event.category)}
           </span>
@@ -174,7 +174,7 @@ export default function EventDetailPage({ params }: { params: Promise<{ id: stri
               <button
                 onClick={toggleInterest}
                 disabled={isTogglingInterest}
-                className={`flex shrink-0 items-center gap-1.5 rounded-full border px-4 py-2 text-sm font-semibold transition-colors disabled:opacity-60 ${
+                className={`flex shrink-0 items-center gap-1.5 border px-4 py-2 text-sm font-semibold transition-colors disabled:opacity-60 ${
                   event.isInterested ? "text-white" : "border-line text-ink-soft hover:bg-paper-warm"
                 }`}
                 style={event.isInterested ? { backgroundColor: accent, borderColor: accent } : undefined}
@@ -194,7 +194,7 @@ export default function EventDetailPage({ params }: { params: Promise<{ id: stri
 
           <Link
             href={`/businesses/${event.businessId}`}
-            className="mt-8 flex items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-semibold text-white shadow-lift"
+            className="mt-8 flex items-center justify-center gap-2 px-5 py-3 text-sm font-semibold text-white shadow-lift"
             style={{ backgroundColor: accent }}
           >
             <MapPin size={16} /> {t("viewBusiness")}

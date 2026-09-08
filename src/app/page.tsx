@@ -81,7 +81,7 @@ export default function HomePage() {
             {t("heroSubtitle")}
           </p>
 
-          <form onSubmit={handleSearch} className="mx-auto mt-8 flex max-w-md items-center gap-2 rounded-full bg-surface p-1.5 shadow-lift">
+          <form onSubmit={handleSearch} className="mx-auto mt-8 flex max-w-md items-center gap-2 border border-line bg-surface p-1.5">
             <Search size={18} className="ml-3 shrink-0 text-ink-soft" />
             <input
               value={query}
@@ -90,7 +90,7 @@ export default function HomePage() {
               maxLength={100}
               className="min-w-0 flex-1 bg-transparent px-1 py-2 text-sm text-ink outline-none placeholder:text-ink-soft"
             />
-            <button type="submit" className="shrink-0 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-white">
+            <button type="submit" className="shrink-0 bg-primary px-5 py-2.5 text-sm font-semibold text-white">
               {t("search")}
             </button>
           </form>
@@ -105,7 +105,7 @@ export default function HomePage() {
               <Link
                 key={cat.name}
                 href={`/businesses?category=${encodeURIComponent(cat.name)}`}
-                className="rounded-full border border-line bg-surface px-5 py-2.5 text-sm font-medium text-ink transition-colors hover:text-white"
+                className="border border-line bg-surface px-5 py-2.5 text-sm font-medium text-ink transition-colors hover:text-white"
                 style={{ borderColor: categoryColor(cat.name) }}
                 onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = categoryColor(cat.name))}
                 onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "")}

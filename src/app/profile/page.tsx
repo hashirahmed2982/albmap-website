@@ -189,7 +189,7 @@ function ProfileContent() {
           <button
             type="submit"
             disabled={isSavingProfile}
-            className="mt-5 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-white disabled:opacity-60"
+            className="mt-5 bg-primary px-5 py-2.5 text-sm font-semibold text-white disabled:opacity-60"
           >
             {isSavingProfile ? t("saving") : t("saveChanges")}
           </button>
@@ -234,7 +234,7 @@ function ProfileContent() {
           <button
             type="submit"
             disabled={isSavingPassword}
-            className="mt-5 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-white disabled:opacity-60"
+            className="mt-5 bg-primary px-5 py-2.5 text-sm font-semibold text-white disabled:opacity-60"
           >
             {isSavingPassword ? t("saving") : t("changePassword")}
           </button>
@@ -254,7 +254,7 @@ function ProfileContent() {
             <button
               type="button"
               onClick={() => setShowDeleteConfirm(true)}
-              className="mt-4 rounded-full border border-error px-5 py-2.5 text-sm font-semibold text-error hover:bg-error/10"
+              className="mt-4 border border-error px-5 py-2.5 text-sm font-semibold text-error hover:bg-error/10"
             >
               {t("deleteAccount")}
             </button>
@@ -277,7 +277,7 @@ function ProfileContent() {
                 <button
                   type="submit"
                   disabled={isDeletingAccount}
-                  className="rounded-full bg-error px-5 py-2.5 text-sm font-semibold text-white disabled:opacity-60"
+                  className="bg-error px-5 py-2.5 text-sm font-semibold text-white disabled:opacity-60"
                 >
                   {isDeletingAccount ? t("deleting") : t("confirmDeleteAccount")}
                 </button>
@@ -289,7 +289,7 @@ function ProfileContent() {
                     setDeleteError(null);
                   }}
                   disabled={isDeletingAccount}
-                  className="rounded-full px-4 py-2.5 text-sm font-medium text-ink-soft hover:bg-paper-warm"
+                  className="px-4 py-2.5 text-sm font-medium text-ink-soft hover:bg-paper-warm"
                 >
                   {t("cancel")}
                 </button>

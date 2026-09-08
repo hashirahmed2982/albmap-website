@@ -88,23 +88,23 @@ function BusinessesContent() {
             </p>
           </div>
 
-          <div className="flex items-center gap-1 rounded-full border border-line bg-surface p-1">
+          <div className="flex items-center gap-1 border border-line bg-surface p-1">
             <button
               onClick={() => setView("list")}
-              className={`flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-medium transition-colors ${view === "list" ? "bg-primary text-white" : "text-ink-soft"}`}
+              className={`flex items-center gap-1.5 px-4 py-2 text-sm font-medium transition-colors ${view === "list" ? "bg-primary text-white" : "text-ink-soft"}`}
             >
               <List size={15} /> {t("list")}
             </button>
             <button
               onClick={() => setView("map")}
-              className={`flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-medium transition-colors ${view === "map" ? "bg-primary text-white" : "text-ink-soft"}`}
+              className={`flex items-center gap-1.5 px-4 py-2 text-sm font-medium transition-colors ${view === "map" ? "bg-primary text-white" : "text-ink-soft"}`}
             >
               <MapIcon size={15} /> {t("map")}
             </button>
           </div>
         </div>
 
-        <form onSubmit={handleSearchSubmit} className="mt-6 flex items-center gap-2 rounded-full border border-line bg-surface p-1.5">
+        <form onSubmit={handleSearchSubmit} className="mt-6 flex items-center gap-2 border border-line bg-surface p-1.5">
           <Search size={17} className="ml-3 shrink-0 text-ink-soft" />
           <input
             value={query}
@@ -113,7 +113,7 @@ function BusinessesContent() {
             maxLength={100}
             className="min-w-0 flex-1 bg-transparent px-1 py-2 text-sm text-ink outline-none placeholder:text-ink-soft"
           />
-          <button type="submit" className="shrink-0 rounded-full bg-primary px-5 py-2 text-sm font-semibold text-white">
+          <button type="submit" className="shrink-0 bg-primary px-5 py-2 text-sm font-semibold text-white">
             {t("search")}
           </button>
         </form>
@@ -122,7 +122,7 @@ function BusinessesContent() {
           <SlidersHorizontal size={15} className="text-ink-soft" />
           <button
             onClick={() => setSelectedCategory("")}
-            className={`rounded-full border px-3.5 py-1.5 text-xs font-medium transition-colors ${!selectedCategory ? "border-primary bg-primary text-white" : "border-line text-ink-soft"}`}
+            className={`border px-3.5 py-1.5 text-xs font-medium transition-colors ${!selectedCategory ? "border-primary bg-primary text-white" : "border-line text-ink-soft"}`}
           >
             {t("all")}
           </button>
@@ -130,7 +130,7 @@ function BusinessesContent() {
             <button
               key={cat.name}
               onClick={() => setSelectedCategory(cat.name === selectedCategory ? "" : cat.name)}
-              className="rounded-full border px-3.5 py-1.5 text-xs font-medium transition-colors"
+              className="border px-3.5 py-1.5 text-xs font-medium transition-colors"
               style={{
                 borderColor: categoryColor(cat.name),
                 backgroundColor: selectedCategory === cat.name ? categoryColor(cat.name) : "transparent",
@@ -141,16 +141,16 @@ function BusinessesContent() {
             </button>
           ))}
 
-          <div className="ml-auto flex items-center gap-1 rounded-full border border-line p-1 text-xs">
+          <div className="ml-auto flex items-center gap-1 border border-line p-1 text-xs">
             <button
               onClick={() => setSortBy("popularity")}
-              className={`rounded-full px-3 py-1.5 font-medium ${sortBy === "popularity" ? "bg-paper-warm text-ink" : "text-ink-soft"}`}
+              className={`px-3 py-1.5 font-medium ${sortBy === "popularity" ? "bg-paper-warm text-ink" : "text-ink-soft"}`}
             >
               {t("popular")}
             </button>
             <button
               onClick={() => setSortBy("distance")}
-              className={`rounded-full px-3 py-1.5 font-medium ${sortBy === "distance" ? "bg-paper-warm text-ink" : "text-ink-soft"}`}
+              className={`px-3 py-1.5 font-medium ${sortBy === "distance" ? "bg-paper-warm text-ink" : "text-ink-soft"}`}
             >
               {t("nearest")}
             </button>
@@ -187,7 +187,7 @@ function BusinessesContent() {
               )}
               {businesses.length === 0 && (
                 <div className="pointer-events-none absolute inset-x-0 top-4 flex justify-center">
-                  <div className="rounded-full bg-surface px-4 py-2 text-xs font-medium text-ink-soft shadow-soft">
+                  <div className="bg-surface px-4 py-2 text-xs font-medium text-ink-soft shadow-soft">
                     {t("noBusinessesHereYet")}
                   </div>
                 </div>

@@ -131,7 +131,7 @@ function AddEventContent() {
           <div className="mt-8 flex flex-col items-center gap-4 rounded-2xl border border-dashed border-line py-16 text-center text-ink-soft">
             <Store size={28} />
             <p className="max-w-xs text-sm">{t("noApprovedBusiness")}</p>
-            <Link href="/dashboard/businesses/new" className="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-white">
+            <Link href="/dashboard/businesses/new" className="bg-primary px-5 py-2.5 text-sm font-semibold text-white">
               {t("addYourFirstBusiness")}
             </Link>
           </div>
@@ -209,7 +209,7 @@ function AddEventContent() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="flex w-full items-center justify-center gap-2 rounded-full bg-primary py-3 text-sm font-semibold text-white shadow-lift disabled:opacity-60"
+              className="flex w-full items-center justify-center gap-2 bg-primary py-3 text-sm font-semibold text-white shadow-lift disabled:opacity-60"
             >
               <CalendarDays size={16} /> {isSubmitting ? t("submitting") : t("submit")}
             </button>

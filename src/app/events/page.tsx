@@ -78,7 +78,7 @@ export default function EventsPage() {
         <h1 className="font-display text-3xl font-bold text-ink">{t("title")}</h1>
         <p className="mt-1 text-sm text-ink-soft">{t("subtitle")}</p>
 
-        <div className="mt-6 flex items-center gap-2 rounded-full border border-line bg-surface p-1.5">
+        <div className="mt-6 flex items-center gap-2 border border-line bg-surface p-1.5">
           <Search size={17} className="ml-3 shrink-0 text-ink-soft" />
           <input
             value={query}
@@ -94,14 +94,14 @@ export default function EventsPage() {
             <button
               key={p}
               onClick={() => setPreset(p)}
-              className={`rounded-full border px-3.5 py-1.5 text-xs font-medium transition-colors ${preset === p ? "border-primary bg-primary text-white" : "border-line text-ink-soft"}`}
+              className={`border px-3.5 py-1.5 text-xs font-medium transition-colors ${preset === p ? "border-primary bg-primary text-white" : "border-line text-ink-soft"}`}
             >
               {t(`datePreset.${p}`)}
             </button>
           ))}
           <button
             onClick={() => setPreset("custom")}
-            className={`rounded-full border px-3.5 py-1.5 text-xs font-medium transition-colors ${preset === "custom" ? "border-primary bg-primary text-white" : "border-line text-ink-soft"}`}
+            className={`border px-3.5 py-1.5 text-xs font-medium transition-colors ${preset === "custom" ? "border-primary bg-primary text-white" : "border-line text-ink-soft"}`}
           >
             {t("datePreset.custom")}
           </button>
@@ -111,14 +111,14 @@ export default function EventsPage() {
                 type="date"
                 value={customFrom}
                 onChange={(e) => setCustomFrom(e.target.value)}
-                className="rounded-full border border-line bg-surface px-3 py-1.5 text-xs text-ink outline-none focus:border-primary"
+                className="border border-line bg-surface px-3 py-1.5 text-xs text-ink outline-none focus:border-primary"
               />
               <span className="text-xs text-ink-soft">{t("until")}</span>
               <input
                 type="date"
                 value={customTo}
                 onChange={(e) => setCustomTo(e.target.value)}
-                className="rounded-full border border-line bg-surface px-3 py-1.5 text-xs text-ink outline-none focus:border-primary"
+                className="border border-line bg-surface px-3 py-1.5 text-xs text-ink outline-none focus:border-primary"
               />
             </div>
           )}
