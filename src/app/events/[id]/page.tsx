@@ -112,10 +112,23 @@ export default function EventDetailPage({ params }: { params: Promise<{ id: stri
       <Header />
       <div className="relative h-64 w-full overflow-hidden md:h-80" style={{ backgroundColor: `color-mix(in srgb, ${accent} 15%, var(--color-surface))` }}>
         {imageUrl ? (
-          <Image src={imageUrl} alt={event.name} fill className="object-cover" priority />
+          <>
+            {/* A blurred, scaled-up copy fills the frame edge-to-edge so the
+                real image can sit on top at object-contain — sharp and
+                never cropped. Event photos are routinely a flyer/poster
+                with the title printed on it and an arbitrary (often
+                portrait) aspect ratio; object-cover alone would hard-crop
+                whatever didn't fit this fixed-height box, which is
+                exactly what was cutting titles off. */}
+            <Image src={imageUrl} alt="" fill aria-hidden className="scale-110 object-cover opacity-70 blur-2xl" />
+            <Image src={imageUrl} alt={event.name} fill className="object-contain" priority />
+          </>
         ) : (
-          <div className="flex h-full w-full items-center justify-center">
-            <CalendarDays size={64} style={{ color: accent }} strokeWidth={1.2} />
+          <div
+            className="flex h-full w-full items-center justify-center"
+            style={{ backgroundImage: `linear-gradient(135deg, ${accent}, color-mix(in srgb, ${accent} 65%, transparent))` }}
+          >
+            <CalendarDays size={72} className="text-white/85" strokeWidth={1.2} />
           </div>
         )}
       </div>
@@ -123,8 +136,8 @@ export default function EventDetailPage({ params }: { params: Promise<{ id: stri
       <div className="mx-auto max-w-3xl px-6 pb-24">
         <div className="-mt-8 rounded-3xl bg-surface p-6 shadow-soft md:p-8">
           <div className="flex items-start justify-between gap-4">
-            <div>
-              <h1 className="font-display text-2xl font-bold text-ink md:text-3xl">{event.name}</h1>
+            <div className="min-w-0 flex-1">
+              <h1 className="break-words font-display text-2xl font-bold text-ink md:text-3xl">{event.name}</h1>
               <Link href={`/businesses/${event.businessId}`} className="mt-1 inline-block text-sm font-medium text-primary hover:underline">
                 {t("hostedBy")} {event.businessName}
               </Link>

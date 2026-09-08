@@ -180,7 +180,14 @@ export default function BusinessDetailPage({ params }: { params: Promise<{ id: s
           generic pin icon. */}
       <div className="relative h-64 w-full overflow-hidden bg-primary md:h-80">
         {logoUrl ? (
-          <Image src={logoUrl} alt={business.name} fill className="object-cover" priority />
+          <>
+            {/* Blurred, scaled-up copy fills the frame edge-to-edge so the
+                real logo can sit on top at object-contain — sharp and
+                never cropped, since a fixed-height object-cover box was
+                hard-cropping non-square/portrait logos. */}
+            <Image src={logoUrl} alt="" fill aria-hidden className="scale-110 object-cover opacity-70 blur-2xl" />
+            <Image src={logoUrl} alt={business.name} fill className="object-contain" priority />
+          </>
         ) : (
           <div className="flex h-full w-full items-center justify-center">
             <span className="font-display text-[220px] leading-none text-white/20">
@@ -193,8 +200,8 @@ export default function BusinessDetailPage({ params }: { params: Promise<{ id: s
       <div className="mx-auto max-w-4xl px-6 pb-24">
         <div className="-mt-8 rounded-3xl bg-surface p-6 shadow-soft md:p-8">
           <div className="flex items-start justify-between gap-4">
-            <div>
-              <h1 className="font-display text-2xl font-bold text-ink md:text-3xl">{business.name}</h1>
+            <div className="min-w-0 flex-1">
+              <h1 className="break-words font-display text-2xl font-bold text-ink md:text-3xl">{business.name}</h1>
               <div className="mt-2 flex flex-wrap items-center gap-3">
                 <span className="text-xs font-semibold tracking-wide text-ink-soft uppercase">
                   {translateCategory(business.category)}
