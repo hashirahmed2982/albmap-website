@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { User as UserIcon, Lock, Camera, AlertTriangle } from "lucide-react";
 import { Header } from "@/components/Header";
+import { PhoneInput } from "@/components/PhoneInput";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { useAuth } from "@/lib/auth-context";
 import { updateProfile, changePassword, uploadAvatar } from "@/lib/auth-api";
@@ -177,13 +178,7 @@ function ProfileContent() {
             </div>
             <div>
               <label className="mb-1.5 block text-sm font-medium text-ink">{t("phoneNumber")}</label>
-              <input
-                type="tel"
-                maxLength={30}
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                className="w-full rounded-xl border border-line bg-paper px-4 py-2.5 text-sm outline-none focus:border-primary"
-              />
+              <PhoneInput value={phone} onChange={setPhone} />
             </div>
           </div>
           <button

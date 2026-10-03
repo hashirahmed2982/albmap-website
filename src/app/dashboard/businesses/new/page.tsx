@@ -9,6 +9,7 @@ import { Header } from "@/components/Header";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { OpeningHoursEditor } from "@/components/OpeningHoursEditor";
 import { LocationPickerClient } from "@/components/LocationPickerClient";
+import { PhoneInput } from "@/components/PhoneInput";
 import { getCategories, localizedCategoryName } from "@/lib/category-api";
 import { submitBusiness, uploadLogo, type DuplicateBusinessError } from "@/lib/business-api";
 import { ApiError } from "@/lib/api";
@@ -210,7 +211,7 @@ function AddBusinessContent() {
           </Field>
 
           <Field label={t("phoneNumber")}>
-            <input type="tel" maxLength={20} value={phone} onChange={(e) => setPhone(e.target.value)} className={inputClass} />
+            <PhoneInput value={phone} onChange={setPhone} />
           </Field>
 
           <label className="flex items-center gap-2 text-sm text-ink">
@@ -219,7 +220,7 @@ function AddBusinessContent() {
           </label>
           {!whatsappSame && (
             <Field label={t("whatsappNumber")}>
-              <input type="tel" maxLength={20} value={whatsapp} onChange={(e) => setWhatsapp(e.target.value)} className={inputClass} />
+              <PhoneInput value={whatsapp} onChange={setWhatsapp} />
             </Field>
           )}
 

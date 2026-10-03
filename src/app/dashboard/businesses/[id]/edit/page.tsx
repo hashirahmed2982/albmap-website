@@ -9,6 +9,7 @@ import { Header } from "@/components/Header";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { OpeningHoursEditor } from "@/components/OpeningHoursEditor";
 import { LocationPickerClient } from "@/components/LocationPickerClient";
+import { PhoneInput } from "@/components/PhoneInput";
 import { getCategories, localizedCategoryName } from "@/lib/category-api";
 import { getBusinessById, updateBusiness, uploadLogo } from "@/lib/business-api";
 import { ApiError } from "@/lib/api";
@@ -227,10 +228,10 @@ function EditBusinessContent({ id }: { id: string }) {
             </div>
           </Field>
           <Field label={tf("phoneNumber")}>
-            <input type="tel" maxLength={20} value={phone} onChange={(e) => setPhone(e.target.value)} className={inputClass} />
+            <PhoneInput value={phone} onChange={setPhone} />
           </Field>
           <Field label={tf("whatsappNumber")}>
-            <input type="tel" maxLength={20} value={whatsapp} onChange={(e) => setWhatsapp(e.target.value)} className={inputClass} />
+            <PhoneInput value={whatsapp} onChange={setWhatsapp} />
           </Field>
           <div>
             <label className="mb-2 block text-sm font-medium text-ink">{tf("openingHours")}</label>
