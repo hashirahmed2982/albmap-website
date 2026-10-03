@@ -12,7 +12,8 @@ import { EventCard } from "@/components/EventCard";
 import { getBusinesses } from "@/lib/business-api";
 import { getEvents } from "@/lib/event-api";
 import { getCategories, localizedCategoryName } from "@/lib/category-api";
-import type { Business, EventItem, Category, Locale } from "@/lib/types";
+import { getContent } from "@/lib/content-api";
+import type { Business, EventItem, Category, Locale, HomeHeroContent, LocalizedContent } from "@/lib/types";
 
 const PIN_CATEGORIES = [
   { color: "var(--color-cat-restaurants)", top: "8%", left: "6%", size: 26 },
@@ -31,18 +32,21 @@ export default function HomePage() {
   const [events, setEvents] = useState<EventItem[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [heroContent, setHeroContent] = useState<LocalizedContent<HomeHeroContent> | null>(null);
 
   useEffect(() => {
     async function load() {
       try {
-        const [bizRes, eventRes, catRes] = await Promise.all([
+        const [bizRes, eventRes, catRes, siteContent] = await Promise.all([
           getBusinesses({ sortBy: "popularity", limit: 6 }),
           getEvents({ limit: 4 }),
           getCategories(),
+          getContent(),
         ]);
         setBusinesses(bizRes.businesses);
         setEvents(eventRes.events);
         setCategories(catRes);
+        setHeroContent(siteContent.homeHero);
       } catch {
         // Homepage degrades gracefully to empty sections rather than a hard error —
         // the backend being briefly unreachable shouldn't block the whole page.
@@ -57,6 +61,16 @@ export default function HomePage() {
     e.preventDefault();
     router.push(`/businesses${query.trim() ? `?q=${encodeURIComponent(query.trim())}` : ""}`);
   }
+
+  // Admin-editable (admin portal's Content page, PUT /admin/content/home_hero)
+  // since content.service.js's home_hero key was added — falls back to the
+  // current locale's hardcoded next-intl string only if no admin has saved
+  // this yet (a brand-new deploy with an empty site_content table) or the
+  // viewer's locale is somehow missing from what was saved.
+  const hero = heroContent ? heroContent[locale] ?? heroContent.en : null;
+  const heroTitlePart1 = hero?.titlePart1 ?? t("heroTitlePart1");
+  const heroTitlePart2 = hero?.titlePart2 ?? t("heroTitlePart2");
+  const heroSubtitle = hero?.subtitle ?? t("heroSubtitle");
 
   return (
     <div className="min-h-screen bg-paper">
@@ -74,10 +88,10 @@ export default function HomePage() {
 
         <div className="relative z-10 mx-auto max-w-2xl text-center">
           <h1 className="font-display text-4xl font-bold leading-tight text-ink md:text-5xl">
-            {t("heroTitlePart1")} <span className="text-primary">{t("heroTitlePart2")}</span>
+            {heroTitlePart1} <span className="text-primary">{heroTitlePart2}</span>
           </h1>
           <p className="mx-auto mt-4 max-w-lg text-ink-soft">
-            {t("heroSubtitle")}
+            {heroSubtitle}
           </p>
 
           <form onSubmit={handleSearch} className="mx-auto mt-8 flex max-w-md items-center gap-2 border border-line bg-surface p-1.5">

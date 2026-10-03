@@ -171,9 +171,16 @@ export interface LegalPageContent {
   sections: LegalSection[];
 }
 
+export interface HomeHeroContent {
+  titlePart1: string;
+  titlePart2: string;
+  subtitle: string;
+}
+
 export interface SiteContent {
   aboutUs: LocalizedContent<AboutContent> | null;
   socialLinks: SocialLinks | null;
   privacyPolicy: LocalizedContent<LegalPageContent> | null;
   termsConditions: LocalizedContent<LegalPageContent> | null;
+  homeHero: LocalizedContent<HomeHeroContent> | null;
 }
