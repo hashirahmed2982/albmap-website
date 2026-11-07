@@ -8,6 +8,8 @@ export async function getEvents(params: {
   to?: string;
   page?: number;
   limit?: number;
+  lat?: number;
+  lng?: number;
 } = {}): Promise<{ events: EventItem[]; pagination: Pagination }> {
   const qs = new URLSearchParams();
   Object.entries(params).forEach(([k, v]) => {
