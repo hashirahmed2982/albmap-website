@@ -13,6 +13,7 @@ import { getBusinesses } from "@/lib/business-api";
 import { getEvents } from "@/lib/event-api";
 import { getCategories, localizedCategoryName } from "@/lib/category-api";
 import { getContent } from "@/lib/content-api";
+import { useGeolocation } from "@/hooks/useGeolocation";
 import type { Business, EventItem, Category, Locale, HomeHeroContent, LocalizedContent } from "@/lib/types";
 
 const PIN_CATEGORIES = [
@@ -33,6 +34,7 @@ export default function HomePage() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [heroContent, setHeroContent] = useState<LocalizedContent<HomeHeroContent> | null>(null);
+  const { position } = useGeolocation();
 
   useEffect(() => {
     async function load() {
@@ -56,6 +58,30 @@ export default function HomePage() {
     }
     load();
   }, []);
+
+  // Once we know where the visitor is, swap "popular"/"soonest" for
+  // "nearby" — a separate effect (rather than folding into the initial
+  // load above) so the first paint never waits on the browser's
+  // geolocation prompt, and so a denial/unavailable position (resolves to
+  // null — see useGeolocation) simply leaves the global results from the
+  // initial load in place instead of needing its own fallback branch here.
+  useEffect(() => {
+    if (!position) return;
+    const [lat, lng] = position;
+    async function loadNearby() {
+      try {
+        const [bizRes, eventRes] = await Promise.all([
+          getBusinesses({ sortBy: "distance", lat, lng, limit: 6 }),
+          getEvents({ lat, lng, limit: 4 }),
+        ]);
+        setBusinesses(bizRes.businesses);
+        setEvents(eventRes.events);
+      } catch {
+        // Keep whatever the initial load already rendered.
+      }
+    }
+    loadNearby();
+  }, [position]);
 
   function handleSearch(e: React.FormEvent) {
     e.preventDefault();
