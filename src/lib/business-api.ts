@@ -26,6 +26,29 @@ export async function getBusinesses(params: {
   return { businesses: res.data, pagination: res.pagination };
 }
 
+/**
+ * Powers the map's viewport-based marker loading (business.routes.js's
+ * GET /businesses/map) — called on initial map load and again on every
+ * pan/zoom with the map's current visible bounds, instead of
+ * getBusinesses()'s fixed-size single page, which only ever showed
+ * whichever handful of rows happened to land on page 1 regardless of how
+ * many more existed just outside it.
+ */
+export async function getBusinessesInBounds(params: {
+  swLat: number;
+  swLng: number;
+  neLat: number;
+  neLng: number;
+  category?: string;
+}): Promise<Business[]> {
+  const qs = new URLSearchParams();
+  Object.entries(params).forEach(([k, v]) => {
+    if (v !== undefined) qs.set(k, String(v));
+  });
+  const res = await apiFetch<{ data: Business[] }>(`/businesses/map?${qs.toString()}`, { skipAuth: true });
+  return res.data;
+}
+
 export async function searchBusinesses(q: string, page = 1): Promise<BusinessListResult> {
   const res = await apiFetch<{ data: Business[]; pagination: Pagination }>(
     `/businesses/search?q=${encodeURIComponent(q)}&page=${page}`,

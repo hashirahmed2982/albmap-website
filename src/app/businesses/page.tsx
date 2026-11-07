@@ -31,6 +31,7 @@ function BusinessesContent() {
   const [sortBy, setSortBy] = useState<"distance" | "popularity">("popularity");
   const [selectedBusiness, setSelectedBusiness] = useState<Business | null>(null);
   const [searchCenter, setSearchCenter] = useState<[number, number] | null>(null);
+  const [mapResultsCount, setMapResultsCount] = useState<number | null>(null);
 
   const load = useCallback(async () => {
     setIsLoading(true);
@@ -168,10 +169,13 @@ function BusinessesContent() {
             <div className="relative z-0 h-[70vh] overflow-hidden rounded-2xl">
               <MapViewClient
                 businesses={businesses}
+                fetchByBounds={!query.trim()}
+                category={selectedCategory || undefined}
                 center={searchCenter || userPosition || undefined}
                 userPosition={userPosition}
                 recenterTarget={userPosition}
                 onMarkerClick={setSelectedBusiness}
+                onResultsChanged={setMapResultsCount}
                 onLocationUnavailable={(reason) =>
                   showToast(reason === "insecure" ? t("locationInsecure") : t("locationDenied"), "error")
                 }
@@ -179,7 +183,7 @@ function BusinessesContent() {
               {selectedBusiness && (
                 <BusinessOverviewCard business={selectedBusiness} onClose={() => setSelectedBusiness(null)} />
               )}
-              {businesses.length === 0 && (
+              {(query.trim() ? businesses.length : mapResultsCount) === 0 && (
                 <div className="pointer-events-none absolute inset-x-0 top-4 flex justify-center">
                   <div className="bg-surface px-4 py-2 text-xs font-medium text-ink-soft shadow-soft">
                     {t("noBusinessesHereYet")}
