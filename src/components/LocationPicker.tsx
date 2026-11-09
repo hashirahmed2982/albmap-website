@@ -26,10 +26,14 @@ const MAP_OPTIONS: google.maps.MapOptions = {
   zoomControl: true,
   clickableIcons: false,
   gestureHandling: "greedy",
-  // Matches MapView.tsx's same fix — without this, zooming out past the
+  // Matches MapView.tsx's same fixes — without this, zooming out past the
   // Mercator projection's tile coverage (~±85° latitude) shows the map
   // div's plain white default background instead of the dark theme.
   backgroundColor: "#212121",
+  // ...and without this, zooming out far enough makes Maps tile the
+  // whole world repeatedly to fill the container (there's nothing to
+  // pick way out there anyway).
+  minZoom: 3,
 };
 
 export function LocationPicker({
