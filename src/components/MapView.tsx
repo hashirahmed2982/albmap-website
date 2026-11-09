@@ -2,7 +2,7 @@
 
 import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api";
 import { MarkerClusterer } from "@googlemaps/markerclusterer";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { LocateFixed } from "lucide-react";
 import type { Business } from "@/lib/types";
 import { safeLatLng } from "@/lib/format";
@@ -126,6 +126,22 @@ export function MapView({
   const effectiveCenter = center || TIRANA_CENTER;
   const displayedBusinesses = fetchByBounds ? boundsBusinesses : businesses;
 
+  // @react-google-maps/api's <GoogleMap> re-applies its `center` prop with
+  // map.setCenter() in a useEffect keyed on the prop's *reference*, not its
+  // value (see its source — updaterMap.center / the `[map, center]` effect).
+  // Passing a freshly-built `{lat, lng}` literal here every render — which
+  // is exactly what toLatLngLiteral(effectiveCenter) was doing inline below
+  // — meant ANY unrelated re-render (e.g. the bounds re-fetch that runs on
+  // every pan/zoom, via onIdle below) created a new object and snapped the
+  // map straight back to effectiveCenter, fighting the user's own panning.
+  // Memoizing on the actual coordinates keeps the reference stable across
+  // re-renders that don't change where the map should be centered.
+  const centerLiteral = useMemo(
+    () => toLatLngLiteral(effectiveCenter),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [effectiveCenter[0], effectiveCenter[1]],
+  );
+
   // Re-reads whatever's currently in view and fetches exactly that —
   // this is what makes the map show real coverage instead of a single
   // fixed-size page regardless of how many thousands of rows exist
@@ -188,15 +204,15 @@ export function MapView({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [category, fetchByBounds]);
 
-  // Re-centers whenever `center` actually changes (a search result
-  // picked, etc.) — GoogleMap's center/zoom props only set the *initial*
-  // view (see onLoad above); this is the one place recentering after the
-  // first render happens, same role the previous Leaflet
-  // RecenterOnChange component played.
+  // Smoothly animates to `centerLiteral` whenever it actually changes (a
+  // search result picked, geolocation resolving, etc.) — GoogleMap's own
+  // `center` prop (above) also re-centers on a change, but instantly via
+  // setCenter(); panTo() here gives that same recenter a smooth animation
+  // instead, same role the previous Leaflet RecenterOnChange component
+  // played.
   useEffect(() => {
-    mapRef.current?.panTo(toLatLngLiteral(effectiveCenter));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [effectiveCenter[0], effectiveCenter[1]]);
+    mapRef.current?.panTo(centerLiteral);
+  }, [centerLiteral]);
 
   // Keeps the clusterer's grouping in sync with whichever markers are
   // currently rendered — the clusterer never creates markers itself, it
@@ -245,7 +261,7 @@ export function MapView({
     <div className="relative h-full w-full">
       <GoogleMap
         mapContainerStyle={MAP_CONTAINER_STYLE}
-        center={toLatLngLiteral(effectiveCenter)}
+        center={centerLiteral}
         zoom={13}
         onLoad={onLoad}
         onUnmount={onUnmount}
