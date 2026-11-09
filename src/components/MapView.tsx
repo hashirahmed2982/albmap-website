@@ -55,6 +55,15 @@ const MAP_OPTIONS: google.maps.MapOptions = {
   // all-dark map. Matching it to the dark style's own base geometry
   // color makes that empty band read as "dark sky", not a bug.
   backgroundColor: "#212121",
+  // Below this, the viewport needs to show more than 360° of longitude
+  // to fill the container, so Maps tiles the whole world side by side
+  // repeatedly to avoid blank space — a real business (and its cluster
+  // badge) at a fixed longitude then visibly repeats once per copy. Not
+  // a bug, just not useful here: this app's data is Albania + nearby
+  // diaspora countries, never anything that needs a whole-globe view, so
+  // capping how far out you can zoom keeps the repeat from ever
+  // appearing while still leaving room to see all of Europe at once.
+  minZoom: 3,
 };
 
 function toLatLngLiteral([lat, lng]: [number, number]): google.maps.LatLngLiteral {
