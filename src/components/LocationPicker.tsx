@@ -26,6 +26,10 @@ const MAP_OPTIONS: google.maps.MapOptions = {
   zoomControl: true,
   clickableIcons: false,
   gestureHandling: "greedy",
+  // Matches MapView.tsx's same fix — without this, zooming out past the
+  // Mercator projection's tile coverage (~±85° latitude) shows the map
+  // div's plain white default background instead of the dark theme.
+  backgroundColor: "#212121",
 };
 
 export function LocationPicker({

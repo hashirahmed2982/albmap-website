@@ -46,6 +46,15 @@ const MAP_OPTIONS: google.maps.MapOptions = {
   zoomControl: true,
   clickableIcons: false,
   gestureHandling: "greedy",
+  // Google only has tiles for latitudes the Mercator projection can
+  // represent (~±85°) — zoomed out far enough that the viewport extends
+  // past that (e.g. fully zoomed out to see the whole world), the area
+  // beyond has no tile to draw, so the map div's own background shows
+  // through instead. That default is a plain white/light color, which
+  // looked like a broken light-mode band cutting across this otherwise
+  // all-dark map. Matching it to the dark style's own base geometry
+  // color makes that empty band read as "dark sky", not a bug.
+  backgroundColor: "#212121",
 };
 
 function toLatLngLiteral([lat, lng]: [number, number]): google.maps.LatLngLiteral {
